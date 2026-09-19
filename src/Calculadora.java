@@ -28,7 +28,7 @@ public class Calculadora
     }
 
     //psvm
-
+    public static void main(String[] args)
     {
         //Nombreclase nombre objeto = new Nombreclase;x|
         Calculadora calculadora = new Calculadora();
