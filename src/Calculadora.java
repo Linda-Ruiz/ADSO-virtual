@@ -28,7 +28,7 @@ public class Calculadora
     }
 
     //psvm
-    static void main()
+
     {
         //Nombreclase nombre objeto = new Nombreclase;x|
         Calculadora calculadora = new Calculadora();
