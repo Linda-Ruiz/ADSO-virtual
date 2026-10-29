@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facturación | BellaSoft</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- =====================================================
+     1. MENÚ LATERAL
+     BD: permisos.modulo (cada enlace = un módulo) + rol_permiso (qué ve cada rol)
+     ===================================================== -->
+  <aside class="sidebar">
+    <div class="logo">BellaSoft <span class="dot"></span></div>
+    <nav class="nav">
+      <a href="index.html"><span class="icon">📊</span> Dashboard</a>
+      <a href="pacientes.html"><span class="icon">👥</span> Pacientes</a>
+      <a href="citas.html"><span class="icon">📅</span> Citas</a>
+      <a href="tratamientos.html"><span class="icon">✨</span> Tratamientos</a>
+      <a href="facturacion.html" class="active"><span class="icon">🧾</span> Facturación</a>
+      <a href="reportes.html"><span class="icon">📈</span> Reportes</a>
+      <a href="configuracion.html"><span class="icon">⚙️</span> Configuración</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- =====================================================
+     2. BARRA SUPERIOR
+     BD: usuarios.nombres, usuarios.apellidos, roles.nombre (usuario en sesión)
+     ===================================================== -->
+    <header class="topbar">
+      <div class="user-info">
+        <div>Usuario: Administrador</div> <!-- roles.nombre -->
+        <div>Bienvenido nuevamente.</div>
+      </div>
+      <div class="right">
+        <div class="notifications">🔔 Notificaciones</div>
+        <div class="avatar">LR</div> <!-- iniciales: usuarios.nombres + usuarios.apellidos -->
+      </div>
+    </header>
+
+    <div class="content">
+
+      <p class="breadcrumb">Inicio &gt; Facturación</p>
+      <h1>Facturación</h1>
+
+      <!-- =====================================================
+     3. DATOS DE LA FACTURA
+     BD: tabla facturas (INSERT)
+     PROVISIONAL: confirmar columnas con el script SQL real de esta tabla: id_factura, id_paciente, fecha_emision, metodo_pago, descuento, total, estado
+     ===================================================== -->
+      <form class="formulario-paciente" id="form-factura" novalidate>
+        <section class="form-card">
+          <h3>Datos de la factura</h3>
+          <div class="formulario">
+          <div class="campo campo-completo">
+            <label for="f-paciente">Paciente</label>
+            <input id="f-paciente" name="id_paciente" type="search" placeholder="Buscar por nombre o documento" required> <!-- facturas.id_paciente (FK -> pacientes) -->
+          </div>
+
+          <div class="campo">
+            <label for="f-fecha">Fecha de emisión</label>
+            <input id="f-fecha" name="fecha_emision" type="date" required> <!-- facturas.fecha_emision -->
+          </div>
+
+          <div class="campo">
+            <label for="f-metodo">Método de pago</label>
+            <select id="f-metodo" name="metodo_pago"><option>Efectivo</option><option>Tarjeta</option><option>Transferencia</option></select> <!-- facturas.metodo_pago -->
+          </div>
+
+          <div class="campo">
+            <label for="f-estado">Estado</label>
+            <select id="f-estado" name="estado"><option>Pendiente</option><option>Pagada</option><option>Anulada</option></select> <!-- facturas.estado -->
+          </div>
+
+          </div>
+        </section>
+
+        <!-- =====================================================
+     4. DETALLE: TRATAMIENTOS FACTURADOS
+     BD: tabla factura_detalle (id_tratamiento, cantidad, precio_unitario)
+     El subtotal de cada línea y el total se calculan en script.js; el servidor debe recalcularlos
+     ===================================================== -->
+        <section class="form-card">
+          <h3>Detalle</h3>
+          <div class="tabla-scroll">
+          <table class="tabla-datos detalle-factura" id="detalle-factura">
+            <thead>
+              <tr><th>Tratamiento</th><th class="num">Cantidad</th><th class="num">Precio unitario</th><th class="num">Subtotal</th><th></th></tr>
+            </thead>
+            <tbody>
+              <tr class="linea">
+                <td><select name="id_tratamiento[]" aria-label="Tratamiento"><option value="" data-precio="0">Seleccionar tratamiento</option><option data-precio="120000">Facial</option><option data-precio="650000">Botox</option><option data-precio="180000">Depilación láser</option></select></td>
+                <td class="num"><input name="cantidad[]" type="number" min="1" value="1" aria-label="Cantidad"></td>
+                <td class="num"><input name="precio_unitario[]" type="number" min="0" value="0" readonly tabindex="-1" aria-label="Precio unitario"></td>
+                <td class="num subtotal-linea">$0</td>
+                <td><button class="eliminar quitar-linea" type="button" aria-label="Quitar línea">Quitar</button></td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <button class="btn-secundario" type="button" id="btn-agregar-linea">+ Agregar tratamiento</button>
+
+          <dl class="resumen-factura">
+            <div><dt>Subtotal</dt><dd id="resumen-subtotal">$0</dd></div>
+            <div><dt><label for="descuento">Descuento</label></dt><dd><input id="descuento" name="descuento" type="number" min="0" value="0"></dd></div>
+            <div class="total"><dt>Total</dt><dd id="resumen-total">$0</dd></div>
+          </dl>
+        </section>
+
+        <!-- =====================================================
+     5. BOTONES DEL FORMULARIO
+     BD: Guardar = INSERT en facturas + factura_detalle
+     ===================================================== -->
+        <div class="botones-formulario">
+          <button class="guardar" type="submit">Guardar factura</button>
+          <button class="nuevo" type="reset">Nueva</button>
+        </div>
+      </form>
+
+      <!-- =====================================================
+     6. TABLA: FACTURAS EMITIDAS
+     BD: SELECT FROM facturas JOIN pacientes ORDER BY fecha_emision DESC
+     ===================================================== -->
+      <section class="table-card">
+        <h3>Facturas emitidas</h3>
+        <div class="tabla-scroll">
+        <table class="tabla-datos">
+          <thead>
+            <tr><th>N.º</th><th>Fecha</th><th>Paciente</th><th>Método</th><th class="num">Total</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            <tr data-id="3">
+              <td>F-0003</td><td>18/07/2026</td><td>Laura Díaz</td><td>Tarjeta</td><td class="num">$120.000</td>
+              <td><span class="badge badge-activo">Pagada</span></td>
+              <td class="acciones-tabla"><button class="editar" type="button">Ver</button><button class="eliminar" type="button">Anular</button></td>
+            </tr>
+            <tr data-id="2">
+              <td>F-0002</td><td>17/07/2026</td><td>Miguel Molina</td><td>Transferencia</td><td class="num">$650.000</td>
+              <td><span class="badge badge-pendiente">Pendiente</span></td>
+              <td class="acciones-tabla"><button class="editar" type="button">Ver</button><button class="eliminar" type="button">Anular</button></td>
+            </tr>
+            <tr data-id="1">
+              <td>F-0001</td><td>15/07/2026</td><td>Ana Ruiz</td><td>Efectivo</td><td class="num">$180.000</td>
+              <td><span class="badge badge-inactivo">Anulada</span></td>
+              <td class="acciones-tabla"><button class="editar" type="button">Ver</button><button class="eliminar" type="button">Anular</button></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+    </div>
+
+  </main>
+</div>
+
+<!-- Lógica de la página (pendiente de implementar) -->
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Citas | BellaSoft</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- =====================================================
+     1. MENÚ LATERAL
+     BD: permisos.modulo (cada enlace = un módulo) + rol_permiso (qué ve cada rol)
+     ===================================================== -->
+  <aside class="sidebar">
+    <div class="logo">BellaSoft <span class="dot"></span></div>
+    <nav class="nav">
+      <a href="index.html"><span class="icon">📊</span> Dashboard</a>
+      <a href="pacientes.html"><span class="icon">👥</span> Pacientes</a>
+      <a href="citas.html" class="active"><span class="icon">📅</span> Citas</a>
+      <a href="tratamientos.html"><span class="icon">✨</span> Tratamientos</a>
+      <a href="facturacion.html"><span class="icon">🧾</span> Facturación</a>
+      <a href="reportes.html"><span class="icon">📈</span> Reportes</a>
+      <a href="configuracion.html"><span class="icon">⚙️</span> Configuración</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- =====================================================
+     2. BARRA SUPERIOR
+     BD: usuarios.nombres, usuarios.apellidos, roles.nombre (usuario en sesión)
+     ===================================================== -->
+    <header class="topbar">
+      <div class="user-info">
+        <div>Usuario: Administrador</div> <!-- roles.nombre -->
+        <div>Bienvenido nuevamente.</div>
+      </div>
+      <div class="right">
+        <div class="notifications">🔔 Notificaciones</div>
+        <div class="avatar">LR</div> <!-- iniciales: usuarios.nombres + usuarios.apellidos -->
+      </div>
+    </header>
+
+    <div class="content">
+
+      <p class="breadcrumb">Inicio &gt; Gestión de Citas</p>
+      <h1>Gestión de Citas</h1>
+
+      <!-- =====================================================
+     3. FORMULARIO: AGENDAR CITA
+     BD: tabla citas (INSERT)
+     PENDIENTE: confirmar nombres de columnas con la sección de citas del script SQL
+     ===================================================== -->
+      <section class="form-card">
+        <div class="form-grid">
+
+          <label for="paciente">Paciente</label>
+          <div class="field">
+            <span class="icon-search">🔍</span>
+            <input id="paciente" type="text" placeholder="Buscar por nombre o documento"> <!-- citas.id_paciente (FK -> pacientes) -->
+          </div>
+
+          <label for="fecha">Fecha</label>
+          <input id="fecha" type="date"> <!-- citas.fecha -->
+
+          <label for="tratamiento">Tratamiento</label>
+          <select id="tratamiento"> <!-- citas.id_tratamiento (FK -> tratamientos); opciones deben venir de la BD -->
+            <option value="">Seleccionar tratamiento</option>
+            <option>Facial</option>
+            <option>Botox</option>
+            <option>Depilación láser</option>
+          </select>
+
+          <label for="hora">Hora</label>
+          <input id="hora" type="time"> <!-- citas.hora -->
+
+          <label for="estado">Estado</label>
+          <select id="estado"> <!-- citas.estado (PENDIENTE: alinear valores con el ENUM de la BD) -->
+            <option value="">Seleccionar estado</option>
+            <option>Activo</option>
+            <option>Cancelado</option>
+            <option>Completado</option>
+          </select>
+
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-primary">Agendar cita</button>
+        </div>
+      </section>
+
+      <section class="lower">
+
+        <div>
+          <!-- =====================================================
+     4. CALENDARIO MENSUAL
+     BD: días con cita: SELECT DISTINCT fecha FROM citas WHERE MONTH(fecha)=?
+     ===================================================== -->
+          <p class="section-title">Calendario Julio</p>
+          <div class="calendar">
+            <p class="month">JULIO</p>
+            <table>
+              <thead><tr><th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sa</th><th>Do</th></tr></thead>
+              <tbody>
+              <tr><td></td><td></td><td><span class="day">1</span></td><td><span class="day">2</span></td><td><span class="day">3</span></td><td><span class="day">4</span></td><td><span class="day">5</span></td></tr>
+              <tr><td><span class="day">6</span></td><td><span class="day">7</span></td><td><span class="day">8</span></td><td><span class="day">9</span></td><td><span class="day">10</span></td><td><span class="day">11</span></td><td><span class="day">12</span></td></tr>
+              <tr><td><span class="day">13</span></td><td><span class="day">14</span></td><td><span class="day">15</span></td><td><span class="day">16</span></td><td><span class="day">17</span></td><td><span class="day highlight">18</span></td><td><span class="day selected">19</span></td></tr>
+              <tr><td><span class="day">20</span></td><td><span class="day">21</span></td><td><span class="day">22</span></td><td><span class="day">23</span></td><td><span class="day">24</span></td><td><span class="day highlight">25</span></td><td><span class="day highlight">26</span></td></tr>
+              <tr><td><span class="day">27</span></td><td><span class="day">28</span></td><td><span class="day">29</span></td><td><span class="day">30</span></td><td><span class="day">31</span></td><td></td><td></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <!-- =====================================================
+     5. TABLA: CITAS PROGRAMADAS
+     BD: citas JOIN pacientes JOIN tratamientos WHERE fecha = día seleccionado
+     ===================================================== -->
+          <p class="section-title">Citas Programadas</p>
+          <div class="table-wrap">
+            <table class="citas">
+              <thead>
+                <tr>
+                  <th>Hora</th>         <!-- citas.hora -->
+                  <th>Paciente</th>     <!-- pacientes.nombres + apellidos -->
+                  <th>Tratamiento</th>  <!-- tratamientos.nombre -->
+                  <th>Estado</th>       <!-- citas.estado -->
+                  <th>Acciones</th>     <!-- Editar = UPDATE | Cancelar = estado 'Cancelado' -->
+                </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>09:00</td><td>Laura Díaz</td><td>Facial</td>
+                <td class="estado-activo">Activo</td>
+                <td><div class="acciones">
+                  <button class="btn-editar" type="button">Editar</button>
+                  <button class="btn-cancelar" type="button">Cancelar</button>
+                </div></td>
+              </tr>
+              <tr>
+                <td>10:30</td><td>Miguel Molina</td><td>Botox</td>
+                <td class="estado-activo">Activo</td>
+                <td><div class="acciones">
+                  <button class="btn-editar" type="button">Editar</button>
+                  <button class="btn-cancelar" type="button">Cancelar</button>
+                </div></td>
+              </tr>
+              <tr>
+                <td>11:45</td><td>Lola Lolita</td><td>Depilación láser</td>
+                <td class="estado-activo">Activo</td>
+                <td><div class="acciones">
+                  <button class="btn-editar" type="button">Editar</button>
+                  <button class="btn-cancelar" type="button">Cancelar</button>
+                </div></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+  </main>
+</div>
+
+<!-- Lógica de la página (pendiente de implementar) -->
+<script src="script.js"></script>
+
+</body>
+</html>

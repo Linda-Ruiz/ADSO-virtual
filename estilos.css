@@ -1,0 +1,1222 @@
+/* =====================================================
+   BellaSoft - Hoja de estilos global
+   Archivos que la usan: index.html, pacientes.html, citas.html
+   Organización: una sección por bloque de la interfaz,
+   con la tabla de la BD a la que corresponde (si aplica).
+   ===================================================== */
+
+
+/* =====================================================
+   1. BASE
+   Aplica a: todas las páginas
+   ===================================================== */
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: #F5F7FA;
+  color: #334155;
+  min-height: 100vh;
+}
+
+
+/* =====================================================
+   2. LAYOUT GENERAL
+   Estructura: .app > (.sidebar + .main)
+   Aplica a: todas las páginas
+   ===================================================== */
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.content {
+  padding: 24px 32px 32px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.contenido {
+  width: 100%;
+  max-width: 1350px;
+  margin: auto;
+}
+
+
+/* =====================================================
+   3. MENÚ LATERAL (SIDEBAR)
+   BD: permisos.modulo -> cada enlace es un módulo
+       rol_permiso     -> define qué enlaces ve cada rol
+   ===================================================== */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: linear-gradient(to bottom, #fff1f2, #ffffff);
+  border-right: 1px solid #ffe4e6;
+  padding: 24px 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  margin-bottom: 28px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.logo .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fda4af;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #64748b;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  background: #fff1f2;
+  color: #334155;
+}
+
+.nav a.active {
+  background: #fecdd3;
+  color: #881337;
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   4. BARRA SUPERIOR (TOPBAR)
+   BD: usuarios.nombres, usuarios.apellidos -> "Usuario"
+       roles.nombre                         -> rol mostrado
+   ===================================================== */
+.topbar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 32px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.topbar .user-info {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+
+.topbar .right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.notifications {
+  font-size: 13px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Iniciales del usuario: primera letra de nombres + apellidos */
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffe4e6;
+  color: #9f1239;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* =====================================================
+   5. COMPONENTES COMPARTIDOS
+   Aplica a: dashboard, pacientes, citas
+   ===================================================== */
+
+/* ---- 5.1 Insignias de estado ----
+   BD: pacientes.estado ('Activo' / 'Inactivo') */
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.badge-activo {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.badge-inactivo {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* ---- 5.2 Botones genéricos ---- */
+.btn {
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none; /* los .btn del dashboard son enlaces <a> */
+  display: inline-block;
+}
+
+.btn-green {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.btn-green:hover {
+  background: #a7f3d0;
+}
+
+.btn-pink {
+  background: #fecdd3;
+  color: #881337;
+}
+
+.btn-pink:hover {
+  background: #fda4af;
+}
+
+.action-icons {
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ---- 5.3 Tarjeta de formulario ----
+   Usada en: pacientes.html y citas.html */
+.form-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  padding: 28px 32px;
+  margin-bottom: 32px;
+}
+
+
+/* =====================================================
+   6. DASHBOARD (index.html)
+   ===================================================== */
+
+/* ---- 6.1 Tarjetas de resumen ----
+   BD: Pacientes     -> COUNT(*) FROM pacientes
+       Citas         -> COUNT(*) FROM citas
+       Tratamientos  -> COUNT(*) FROM tratamientos
+       Ingresos      -> SUM(total) FROM facturas   */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.stat-card .emoji {
+  font-size: 22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff1f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-card .label {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+.stat-card .value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+/* ---- 6.2 Botones de acción rápida ---- */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+/* ---- 6.3 Paneles: "Últimas citas" y "Próximas citas"
+   BD: citas JOIN pacientes (nombre, documento, teléfono) */
+.panels {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.panel {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.panel-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #fff1f2;
+}
+
+.panel table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.panel th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  color: #64748b;
+  padding: 10px 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.panel td {
+  padding: 12px 20px;
+  color: #475569;
+  border-top: 1px solid #f1f5f9;
+}
+
+
+/* =====================================================
+   7. FORMULARIO DE CITAS (citas.html)
+   BD: tabla citas (paciente, tratamiento, fecha, hora, estado)
+   ===================================================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  row-gap: 16px;
+  align-items: center;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.form-grid label {
+  font-size: 14px;
+  color: #475569;
+}
+
+/* Buscador de paciente: pacientes.nombres / apellidos / numero_documento */
+.field {
+  position: relative;
+}
+
+.field .icon-search {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.field input {
+  padding-left: 30px;
+}
+
+.form-grid input,
+.form-grid select {
+  width: 100%;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 14px;
+  color: #475569;
+  font-family: inherit;
+  outline: none;
+}
+
+.form-grid input::placeholder {
+  color: #94a3b8;
+}
+
+.form-grid input:focus,
+.form-grid select:focus {
+  box-shadow: 0 0 0 2px #fecdd3;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.btn-primary {
+  background: #fecdd3;
+  color: #881337;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-primary:hover {
+  background: #fda4af;
+}
+
+
+/* =====================================================
+   8. CALENDARIO Y CITAS PROGRAMADAS (citas.html)
+   ===================================================== */
+.lower {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 24px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+/* ---- 8.1 Calendario mensual ----
+   BD: .highlight -> días con citas (citas.fecha)
+       .selected  -> día seleccionado               */
+.calendar {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.calendar .month {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 10px;
+}
+
+.calendar table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 11px;
+}
+
+.calendar th {
+  color: #94a3b8;
+  font-weight: 400;
+  padding-bottom: 6px;
+}
+
+.calendar td {
+  padding: 3px 0;
+}
+
+.calendar .day {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #475569;
+}
+
+.calendar .day.highlight {
+  color: #fb7185;
+  font-weight: 600;
+}
+
+.calendar .day.selected {
+  background: #fda4af;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ---- 8.2 Tabla de citas programadas ----
+   BD: citas.hora, pacientes (nombre), tratamientos.nombre, citas.estado */
+.table-wrap {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+table.citas {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.citas thead {
+  background: #fff1f2;
+}
+
+table.citas th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+table.citas td {
+  padding: 12px 16px;
+  border-top: 1px solid #f1f5f9;
+  color: #475569;
+  font-size: 14px;
+}
+
+.estado-activo {
+  color: #059669;
+  font-weight: 600;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-editar,
+.btn-cancelar {
+  border: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-editar {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.btn-editar:hover {
+  background: #fde68a;
+}
+
+.btn-cancelar {
+  background: #ffe4e6;
+  color: #9f1239;
+}
+
+.btn-cancelar:hover {
+  background: #fecdd3;
+}
+
+
+/* =====================================================
+   9. GESTIÓN DE PACIENTES (pacientes.html)
+   BD: tabla pacientes + historia_clinica
+   ===================================================== */
+
+/* ---- 9.1 Encabezado de página (migas y título) ---- */
+.breadcrumb {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0 0 6px;
+}
+
+.content h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 20px;
+}
+
+.form-card h3,
+.table-card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+  margin: 0 0 18px;
+}
+
+/* ---- 9.2 Buscador ---- */
+.busqueda {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  max-width: 560px;
+}
+
+.busqueda input {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #475569;
+  outline: none;
+}
+
+.busqueda input:focus {
+  border-color: #fda4af;
+  box-shadow: 0 0 0 2px #fecdd3;
+}
+
+.busqueda button {
+  background: #fecdd3;
+  color: #881337;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.busqueda button:hover {
+  background: #fda4af;
+}
+
+/* ---- 9.3 Formulario (rejilla de 2 columnas) ----
+   Un .form-card por bloque: datos personales, contacto, historia clínica */
+.formulario {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px 24px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo-completo {
+  grid-column: 1 / -1;
+}
+
+.campo label {
+  font-size: 13px;
+  color: #475569;
+}
+
+.campo input:not([type="checkbox"]),
+.campo select,
+.campo textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: #f1f5f9;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #475569;
+  outline: none;
+}
+
+.campo textarea {
+  resize: vertical;
+}
+
+.campo input:focus,
+.campo select:focus,
+.campo textarea:focus {
+  box-shadow: 0 0 0 2px #fecdd3;
+}
+
+.campo input[readonly] {
+  background: #e8edf3;
+  color: #64748b;
+  cursor: default;
+}
+
+/* Casillas (acepta_tratamiento_datos, embarazo_lactancia) */
+.campo-check label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.campo-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: #fb7185;
+}
+
+/* Campo inválido tras intentar guardar (lo marca script.js) */
+.campo .invalido {
+  border-color: #f43f5e;
+  background: #fff1f2;
+}
+
+.mensaje-error {
+  font-size: 12px;
+  color: #be123c;
+}
+
+/* ---- 9.4 Botones del formulario ---- */
+.botones-formulario {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.botones-formulario button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.guardar {
+  background: #fecdd3;
+  color: #881337;
+}
+
+.guardar:hover {
+  background: #fda4af;
+}
+
+.actualizar {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.actualizar:hover {
+  background: #a7f3d0;
+}
+
+.nuevo {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.nuevo:hover {
+  background: #cbd5e1;
+}
+
+/* ---- 9.5 Tabla de pacientes registrados ---- */
+.table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px 0 8px;
+}
+
+.table-card h3 {
+  padding: 0 24px;
+}
+
+.tabla-scroll {
+  overflow-x: auto;
+}
+
+.tabla-pacientes,
+.tabla-datos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tabla-pacientes th,
+.tabla-datos th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  background: #fff1f2;
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+.tabla-pacientes td,
+.tabla-datos td {
+  padding: 12px 16px;
+  color: #475569;
+  border-top: 1px solid #f1f5f9;
+}
+
+.tabla-pacientes tr.seleccionado td,
+.tabla-datos tr.seleccionado td {
+  background: #fff7f8;
+}
+
+.acciones-tabla {
+  display: flex;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.editar,
+.eliminar {
+  border: none;
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.editar {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.editar:hover {
+  background: #fde68a;
+}
+
+.eliminar {
+  background: #ffe4e6;
+  color: #9f1239;
+}
+
+.eliminar:hover {
+  background: #fecdd3;
+}
+
+.sin-resultados td {
+  text-align: center;
+  color: #94a3b8;
+  padding: 24px;
+}
+
+
+/* =====================================================
+   10. COMPONENTES DE LISTADO Y FORMULARIOS COMPARTIDOS
+   Usados en: tratamientos, facturación, reportes, configuración
+   ===================================================== */
+
+/* Columnas numéricas (precios, cantidades) alineadas a la derecha */
+.num {
+  text-align: right !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Estado "Pendiente" (facturas) */
+.badge-pendiente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Botón secundario (agregar línea, exportar) */
+.btn-secundario {
+  background: #ffffff;
+  color: #881337;
+  border: 1px dashed #fda4af;
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin-top: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btn-secundario:hover {
+  background: #fff1f2;
+}
+
+/* Foco visible para teclado en botones y enlaces */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #fb7185;
+  outline-offset: 2px;
+}
+
+
+/* =====================================================
+   11. INICIO DE SESIÓN (inicio-sesion.html)
+   BD: usuarios.email, usuarios.password_hash, usuarios.activo
+   ===================================================== */
+.pagina-login {
+  background: #ffffff;
+}
+
+.login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+.login-marca {
+  background: linear-gradient(160deg, #fecdd3, #fff1f2);
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.login-marca .logo {
+  font-size: 22px;
+  padding: 0;
+}
+
+.login-marca p {
+  font-size: 26px;
+  line-height: 1.3;
+  font-weight: 600;
+  color: #881337;
+  max-width: 14em;
+  margin: 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px;
+  max-width: 420px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.login-form h1 {
+  margin-bottom: 6px;
+}
+
+.login-ayuda {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 24px;
+}
+
+.login-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-boton {
+  margin-top: 8px;
+  padding: 12px;
+}
+
+.login-error {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #9f1239;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   12. CONFIGURACIÓN (configuracion.html)
+   BD: usuarios, roles, permisos, rol_permiso
+   ===================================================== */
+.rol-selector {
+  max-width: 280px;
+  margin-bottom: 16px;
+}
+
+/* Matriz módulo x acción: cada casilla = una fila de la tabla permisos */
+.matriz-permisos th,
+.matriz-permisos td {
+  text-align: center;
+}
+
+.matriz-permisos th:first-child,
+.matriz-permisos tbody th {
+  text-align: left;
+}
+
+.matriz-permisos tbody th {
+  font-weight: 500;
+  color: #475569;
+  padding: 12px 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.matriz-permisos input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #fb7185;
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   13. FACTURACIÓN (facturacion.html)
+   BD: facturas, factura_detalle
+   ===================================================== */
+.detalle-factura select,
+.detalle-factura input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #f1f5f9;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #475569;
+}
+
+.detalle-factura input[readonly] {
+  background: #e8edf3;
+  color: #64748b;
+}
+
+.detalle-factura td:first-child {
+  min-width: 220px;
+}
+
+.detalle-factura td.num input {
+  min-width: 90px;
+  text-align: right;
+}
+
+.resumen-factura {
+  margin: 24px 0 0 auto;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.resumen-factura div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: #475569;
+}
+
+.resumen-factura dt,
+.resumen-factura dd {
+  margin: 0;
+}
+
+.resumen-factura input {
+  width: 130px;
+  background: #f1f5f9;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  text-align: right;
+}
+
+.resumen-factura .total {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+
+/* =====================================================
+   14. REPORTES (reportes.html)
+   BD: consultas agregadas sobre facturas, citas, pacientes
+   ===================================================== */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.filtros .campo {
+  min-width: 170px;
+}
+
+.filtros button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.barras {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.barra-fila {
+  display: grid;
+  grid-template-columns: 120px 1fr 90px;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: #475569;
+}
+
+.barra-pista {
+  background: #f1f5f9;
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.barra-relleno {
+  display: block;
+  height: 100%;
+  background: #fb7185;
+  border-radius: 999px;
+}
+
+.barra-valor {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* =====================================================
+   15. RESPONSIVE
+   ===================================================== */
+@media (max-width: 900px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .stats  { grid-template-columns: repeat(2, 1fr); }
+  .panels { grid-template-columns: 1fr; }
+  .lower  { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 780px) {
+  .app        { flex-direction: column; }
+  .sidebar    { width: 100%; }
+  .formulario { grid-template-columns: 1fr; }
+  .content    { padding: 20px 16px 28px; }
+
+  .login        { grid-template-columns: 1fr; }
+  .login-marca  { padding: 28px; min-height: 160px; }
+  .login-marca p { font-size: 20px; }
+  .login-form   { padding: 32px 24px; }
+  .barra-fila   { grid-template-columns: 90px 1fr 80px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+
+/* =====================================================
+   16. CÓDIGO HEREDADO SIN USO
+   Ninguna página actual usa estas clases (.header y
+   derivadas). Se conservan solo por si se reutilizan;
+   se pueden eliminar sin afectar nada.
+   ===================================================== */
+.header {
+  background: #EEF2F7;
+  border-bottom: 1px solid #D9DEE5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 35px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+}
+
+.header .brand {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.brand-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1F2937;
+}
+
+.brand-name .dot {
+  color: #F28CA8;
+  font-size: 11px;
+}
+
+.brand-sub {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.notif {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #6B7280;
+  cursor: pointer;
+}

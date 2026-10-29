@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Pacientes | BellaSoft</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+ 
+<div class="app">
+ 
+  <!-- =====================================================
+     1. MENÚ LATERAL
+     BD: permisos.modulo (cada enlace = un módulo) + rol_permiso (qué ve cada rol)
+     ===================================================== -->
+  <aside class="sidebar">
+    <div class="logo">BellaSoft <span class="dot"></span></div>
+    <nav class="nav">
+      <a href="index.html"><span class="icon">📊</span> Dashboard</a>
+      <a href="pacientes.html" class="active"><span class="icon">👥</span> Pacientes</a>
+      <a href="citas.html"><span class="icon">📅</span> Citas</a>
+      <a href="tratamientos.html"><span class="icon">✨</span> Tratamientos</a>
+      <a href="facturacion.html"><span class="icon">🧾</span> Facturación</a>
+      <a href="reportes.html"><span class="icon">📈</span> Reportes</a>
+      <a href="configuracion.html"><span class="icon">⚙️</span> Configuración</a>
+    </nav>
+  </aside>
+ 
+  <main class="main">
+ 
+    <!-- =====================================================
+     2. BARRA SUPERIOR
+     BD: usuarios.nombres, usuarios.apellidos, roles.nombre (usuario en sesión)
+     ===================================================== -->
+    <header class="topbar">
+      <div class="user-info">
+        <div>Usuario: Administrador</div> <!-- roles.nombre -->
+        <div>Bienvenido nuevamente.</div>
+      </div>
+      <div class="right">
+        <div class="notifications">🔔 Notificaciones</div>
+        <div class="avatar">LR</div> <!-- iniciales: usuarios.nombres + usuarios.apellidos -->
+      </div>
+    </header>
+ 
+    <div class="content">
+ 
+      <div class="breadcrumb">Inicio &gt; Gestión de Pacientes</div>
+      <h1>Gestión de Pacientes</h1>
+ 
+      <!-- =====================================================
+     3. BUSCADOR
+     BD: pacientes.nombres, pacientes.apellidos, pacientes.numero_documento
+     ===================================================== -->
+      <section class="busqueda">
+        <input type="text" placeholder="Buscar por nombre o documento">
+        <button type="button">Buscar</button>
+      </section>
+ 
+      <!-- =====================================================
+     4. FORMULARIO: INFORMACIÓN DEL PACIENTE
+     BD: tabla pacientes
+     PENDIENTE: ajustar campos al esquema (ver notas junto a cada campo)
+     ===================================================== -->
+      <section class="form-card">
+        <h3>Información del Paciente</h3>
+ 
+        <form class="formulario">
+          <div class="campo">
+            <label>Nombre</label>
+            <input type="text"> <!-- pacientes.nombres + pacientes.apellidos (PENDIENTE: separar en dos campos) -->
+          </div>
+ 
+          <div class="campo">
+            <label>Tipo de documento</label>
+            <select><option>CC</option><option>CE</option><option>Pasaporte</option></select> <!-- pacientes.tipo_documento ENUM('CC','TI','CE','PA','RC') (PENDIENTE: faltan TI y RC; 'Pasaporte' = 'PA') -->
+          </div>
+ 
+          <div class="campo">
+            <label>Documento</label>
+            <input type="text"> <!-- pacientes.numero_documento -->
+          </div>
+ 
+          <div class="campo">
+            <label>Fecha de nacimiento</label>
+            <input type="date"> <!-- pacientes.fecha_nacimiento -->
+          </div>
+ 
+          <div class="campo">
+            <label>Edad</label>
+            <input type="number" readonly> <!-- NO es columna: se calcula desde fecha_nacimiento -->
+          </div>
+ 
+          <div class="campo">
+            <label>Teléfono</label>
+            <input type="text"> <!-- pacientes.telefono -->
+          </div>
+ 
+          <div class="campo">
+            <label>Correo electrónico</label>
+            <input type="email"> <!-- pacientes.email -->
+          </div>
+ 
+          <div class="campo">
+            <label>Contacto de emergencia</label>
+            <input type="text"> <!-- pacientes.contacto_emergencia_nombre + contacto_emergencia_telefono (PENDIENTE: separar) -->
+          </div>
+ 
+          <div class="campo">
+            <label>Estado</label>
+            <select><option>Activo</option><option>Inactivo</option></select> <!-- pacientes.estado ENUM('Activo','Inactivo') -->
+          </div>
+ 
+          <div class="campo campo-completo">
+            <label>Observaciones</label>
+            <textarea rows="4"></textarea> <!-- pacientes.observaciones -->
+          </div>
+ 
+          <!-- FALTAN en el formulario (existen en BD): sexo, direccion, ciudad, acepta_tratamiento_datos -->
+          <!-- FALTA bloque historia_clinica: alergias, enfermedades_previas, medicamentos_actuales, cirugias_previas, embarazo_lactancia, tipo_piel -->
+ 
+          <!-- =====================================================
+     5. BOTONES DEL FORMULARIO
+     BD: Guardar = INSERT | Actualizar = UPDATE | Nuevo = limpiar
+     ===================================================== -->
+          <div class="botones-formulario">
+            <button class="guardar" type="submit">Guardar</button>
+            <button class="nuevo" type="reset">Nuevo</button>
+            <button class="actualizar" type="button">Actualizar</button>
+          </div>
+        </form>
+      </section>
+ 
+      <!-- =====================================================
+     6. TABLA: PACIENTES REGISTRADOS
+     BD: SELECT FROM pacientes ORDER BY fecha_registro DESC
+     ===================================================== -->
+      <section class="table-card">
+        <h3>Pacientes Registrados</h3>
+        <table class="tabla-pacientes">
+          <thead>
+            <tr>
+              <th>Paciente</th>        <!-- CONCAT(nombres,' ',apellidos) -->
+              <th>Documento</th>       <!-- numero_documento -->
+              <th>Teléfono</th>        <!-- telefono -->
+              <th>Correo</th>          <!-- email -->
+              <th>Fecha Registro</th>  <!-- fecha_registro -->
+              <th>Estado</th>          <!-- estado -->
+              <th>Acciones</th>        <!-- UPDATE / DELETE (o estado = 'Inactivo') -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ana Ruiz</td><td>1002456</td><td>3001234567</td><td>ana@gmail.com</td><td>01/12/2025</td>
+              <td><span class="badge badge-activo">Activo</span></td>
+              <td class="acciones-tabla">
+                <button class="editar" type="button">Editar</button>
+                <button class="eliminar" type="button">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+ 
+  </main>
+</div>
+ 
+<!-- Lógica de la página (pendiente de implementar) -->
+<script src="script.js"></script>
+ 
+</body>
+</html>
+ 

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración | BellaSoft</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- =====================================================
+     1. MENÚ LATERAL
+     BD: permisos.modulo (cada enlace = un módulo) + rol_permiso (qué ve cada rol)
+     ===================================================== -->
+  <aside class="sidebar">
+    <div class="logo">BellaSoft <span class="dot"></span></div>
+    <nav class="nav">
+      <a href="index.html"><span class="icon">📊</span> Dashboard</a>
+      <a href="pacientes.html"><span class="icon">👥</span> Pacientes</a>
+      <a href="citas.html"><span class="icon">📅</span> Citas</a>
+      <a href="tratamientos.html"><span class="icon">✨</span> Tratamientos</a>
+      <a href="facturacion.html"><span class="icon">🧾</span> Facturación</a>
+      <a href="reportes.html"><span class="icon">📈</span> Reportes</a>
+      <a href="configuracion.html" class="active"><span class="icon">⚙️</span> Configuración</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- =====================================================
+     2. BARRA SUPERIOR
+     BD: usuarios.nombres, usuarios.apellidos, roles.nombre (usuario en sesión)
+     ===================================================== -->
+    <header class="topbar">
+      <div class="user-info">
+        <div>Usuario: Administrador</div> <!-- roles.nombre -->
+        <div>Bienvenido nuevamente.</div>
+      </div>
+      <div class="right">
+        <div class="notifications">🔔 Notificaciones</div>
+        <div class="avatar">LR</div> <!-- iniciales: usuarios.nombres + usuarios.apellidos -->
+      </div>
+    </header>
+
+    <div class="content">
+
+      <p class="breadcrumb">Inicio &gt; Configuración</p>
+      <h1>Configuración</h1>
+
+      <!-- =====================================================
+     3. USUARIOS: FORMULARIO
+     BD: tabla usuarios (INSERT / UPDATE)
+     La contraseña se guarda solo como hash (password_hash); nunca en texto plano
+     ===================================================== -->
+      <form class="formulario-paciente" id="form-usuario" novalidate>
+        <section class="form-card">
+          <h3>Datos del usuario</h3>
+          <div class="formulario">
+          <div class="campo">
+            <label for="u-nombres">Nombres</label>
+            <input id="u-nombres" name="nombres" type="text" maxlength="100" required> <!-- usuarios.nombres VARCHAR(100) -->
+          </div>
+
+          <div class="campo">
+            <label for="u-apellidos">Apellidos</label>
+            <input id="u-apellidos" name="apellidos" type="text" maxlength="100" required> <!-- usuarios.apellidos VARCHAR(100) -->
+          </div>
+
+          <div class="campo">
+            <label for="u-email">Correo electrónico</label>
+            <input id="u-email" name="email" type="email" maxlength="120" autocomplete="off" required> <!-- usuarios.email VARCHAR(120) (único) -->
+          </div>
+
+          <div class="campo">
+            <label for="u-telefono">Teléfono</label>
+            <input id="u-telefono" name="telefono" type="tel" maxlength="20"> <!-- usuarios.telefono VARCHAR(20) -->
+          </div>
+
+          <div class="campo">
+            <label for="u-rol">Rol</label>
+            <select id="u-rol" name="id_rol" required><option value="">Seleccionar rol</option><option value="1">Administrador</option><option value="2">Recepción</option><option value="3">Esteticista</option></select> <!-- usuarios.id_rol (FK -> roles); las opciones deben venir de la tabla roles -->
+          </div>
+
+          <div class="campo">
+            <label for="u-password">Contraseña</label>
+            <input id="u-password" name="password" type="password" autocomplete="new-password" minlength="8" placeholder="Mínimo 8 caracteres"> <!-- se guarda como usuarios.password_hash; al editar, vacío = no cambiar -->
+          </div>
+
+          <div class="campo campo-completo campo-check">
+            <label for="u-activo"><input id="u-activo" name="activo" type="checkbox" value="1"> Usuario activo (puede iniciar sesión)</label> <!-- usuarios.activo TINYINT(1) -->
+          </div>
+
+          </div>
+        </section>
+        <div class="botones-formulario">
+          <button class="guardar" type="submit">Guardar</button>
+          <button class="actualizar" type="button">Actualizar</button>
+          <button class="nuevo" type="reset">Nuevo</button>
+        </div>
+      </form>
+
+      <!-- =====================================================
+     4. USUARIOS: TABLA
+     BD: SELECT FROM usuarios JOIN roles
+     ===================================================== -->
+      <section class="table-card">
+        <h3>Usuarios del sistema</h3>
+        <div class="tabla-scroll">
+        <table class="tabla-datos">
+          <thead>
+            <tr><th>Usuario</th><th>Correo</th><th>Rol</th><th>Último acceso</th><th>Estado</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            <tr data-id="1">
+              <td>Laura Rodríguez</td><td>laura@bellasoft.co</td><td>Administrador</td><td>Hoy, 08:12</td><td><span class="badge badge-activo">Activo</span></td>
+              <td class="acciones-tabla"><button class="editar" type="button">Editar</button><button class="eliminar" type="button">Desactivar</button></td>
+            </tr>
+            <tr data-id="2">
+              <td>Camila Torres</td><td>camila@bellasoft.co</td><td>Recepción</td><td>Ayer, 17:40</td><td><span class="badge badge-activo">Activo</span></td>
+              <td class="acciones-tabla"><button class="editar" type="button">Editar</button><button class="eliminar" type="button">Desactivar</button></td>
+            </tr>
+            <tr data-id="3">
+              <td>Andrés Pérez</td><td>andres@bellasoft.co</td><td>Esteticista</td><td>12/07/2026</td><td><span class="badge badge-inactivo">Inactivo</span></td>
+              <td class="acciones-tabla"><button class="editar" type="button">Editar</button><button class="eliminar" type="button">Desactivar</button></td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+
+      <!-- =====================================================
+     5. ROLES
+     BD: tabla roles (nombre UNIQUE, descripcion)
+     ===================================================== -->
+      <form class="formulario-paciente" id="form-rol" novalidate>
+        <section class="form-card">
+          <h3>Roles</h3>
+          <div class="formulario">
+          <div class="campo">
+            <label for="rol-nombre">Nombre del rol</label>
+            <input id="rol-nombre" name="nombre" type="text" maxlength="50" required> <!-- roles.nombre VARCHAR(50) (único) -->
+          </div>
+
+          <div class="campo">
+            <label for="rol-descripcion">Descripción</label>
+            <input id="rol-descripcion" name="descripcion" type="text" maxlength="200"> <!-- roles.descripcion VARCHAR(200) -->
+          </div>
+
+          </div>
+        </section>
+        <div class="botones-formulario">
+          <button class="guardar" type="submit">Guardar rol</button>
+          <button class="nuevo" type="reset">Nuevo</button>
+        </div>
+      </form>
+      <section class="table-card">
+        <div class="tabla-scroll">
+        <table class="tabla-datos">
+          <thead><tr><th>Rol</th><th>Descripción</th><th class="num">Usuarios</th><th>Acciones</th></tr></thead> <!-- Usuarios = COUNT(*) FROM usuarios por id_rol; no se elimina un rol con usuarios (FK) -->
+          <tbody>
+            <tr data-id="1"><td>Administrador</td><td>Acceso total al sistema</td><td class="num">1</td>
+              <td class="acciones-tabla"><button class="editar" type="button">Editar</button><button class="eliminar" type="button">Eliminar</button></td></tr>
+            <tr data-id="2"><td>Recepción</td><td>Agenda citas y registra pacientes</td><td class="num">1</td>
+              <td class="acciones-tabla"><button class="editar" type="button">Editar</button><button class="eliminar" type="button">Eliminar</button></td></tr>
+            <tr data-id="3"><td>Esteticista</td><td>Consulta citas y historias clínicas</td><td class="num">1</td>
+              <td class="acciones-tabla"><button class="editar" type="button">Editar</button><button class="eliminar" type="button">Eliminar</button></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+
+      <!-- =====================================================
+     6. PERMISOS POR ROL
+     BD: permisos (modulo, accion) + rol_permiso (id_rol, id_permiso)
+     Guardar = reemplazar las filas de rol_permiso del rol elegido
+     ===================================================== -->
+      <form class="formulario-paciente" id="form-permisos">
+        <section class="form-card">
+          <h3>Permisos por rol</h3>
+          <div class="campo rol-selector">
+            <label for="permisos-rol">Rol</label>
+            <select id="permisos-rol" name="id_rol"><option value="1">Administrador</option><option value="2">Recepción</option><option value="3">Esteticista</option></select>
+          </div>
+          <div class="tabla-scroll">
+          <table class="tabla-datos matriz-permisos">
+            <thead><tr><th>Módulo</th><th>Ver</th><th>Crear</th><th>Editar</th><th>Eliminar</th></tr></thead>
+            <tbody>
+            <tr><th scope="row">Pacientes</th><td><input type="checkbox" data-modulo="pacientes" data-accion="ver" aria-label="Pacientes: ver"></td><td><input type="checkbox" data-modulo="pacientes" data-accion="crear" aria-label="Pacientes: crear"></td><td><input type="checkbox" data-modulo="pacientes" data-accion="editar" aria-label="Pacientes: editar"></td><td><input type="checkbox" data-modulo="pacientes" data-accion="eliminar" aria-label="Pacientes: eliminar"></td></tr>
+            <tr><th scope="row">Citas</th><td><input type="checkbox" data-modulo="citas" data-accion="ver" aria-label="Citas: ver"></td><td><input type="checkbox" data-modulo="citas" data-accion="crear" aria-label="Citas: crear"></td><td><input type="checkbox" data-modulo="citas" data-accion="editar" aria-label="Citas: editar"></td><td><input type="checkbox" data-modulo="citas" data-accion="eliminar" aria-label="Citas: eliminar"></td></tr>
+            <tr><th scope="row">Tratamientos</th><td><input type="checkbox" data-modulo="tratamientos" data-accion="ver" aria-label="Tratamientos: ver"></td><td><input type="checkbox" data-modulo="tratamientos" data-accion="crear" aria-label="Tratamientos: crear"></td><td><input type="checkbox" data-modulo="tratamientos" data-accion="editar" aria-label="Tratamientos: editar"></td><td><input type="checkbox" data-modulo="tratamientos" data-accion="eliminar" aria-label="Tratamientos: eliminar"></td></tr>
+            <tr><th scope="row">Facturación</th><td><input type="checkbox" data-modulo="facturacion" data-accion="ver" aria-label="Facturación: ver"></td><td><input type="checkbox" data-modulo="facturacion" data-accion="crear" aria-label="Facturación: crear"></td><td><input type="checkbox" data-modulo="facturacion" data-accion="editar" aria-label="Facturación: editar"></td><td><input type="checkbox" data-modulo="facturacion" data-accion="eliminar" aria-label="Facturación: eliminar"></td></tr>
+            <tr><th scope="row">Reportes</th><td><input type="checkbox" data-modulo="reportes" data-accion="ver" aria-label="Reportes: ver"></td><td><input type="checkbox" data-modulo="reportes" data-accion="crear" aria-label="Reportes: crear"></td><td><input type="checkbox" data-modulo="reportes" data-accion="editar" aria-label="Reportes: editar"></td><td><input type="checkbox" data-modulo="reportes" data-accion="eliminar" aria-label="Reportes: eliminar"></td></tr>
+            <tr><th scope="row">Configuración</th><td><input type="checkbox" data-modulo="configuracion" data-accion="ver" aria-label="Configuración: ver"></td><td><input type="checkbox" data-modulo="configuracion" data-accion="crear" aria-label="Configuración: crear"></td><td><input type="checkbox" data-modulo="configuracion" data-accion="editar" aria-label="Configuración: editar"></td><td><input type="checkbox" data-modulo="configuracion" data-accion="eliminar" aria-label="Configuración: eliminar"></td></tr>
+            </tbody>
+          </table>
+          </div>
+        </section>
+        <div class="botones-formulario">
+          <button class="guardar" type="submit">Guardar permisos</button>
+        </div>
+      </form>
+    </div>
+
+  </main>
+</div>
+
+<!-- Lógica de la página (pendiente de implementar) -->
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión | BellaSoft</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body class="pagina-login">
+ 
+<main class="login">
+ 
+  <!-- =====================================================
+     1. PANEL DE MARCA
+     BD: solo presentación (sin consulta a BD)
+     ===================================================== -->
+  <aside class="login-marca">
+    <div class="logo">BellaSoft <span class="dot"></span></div>
+    <p>Agenda, pacientes y facturación de tu clínica en un solo lugar.</p>
+  </aside>
+ 
+  <!-- =====================================================
+     2. FORMULARIO DE ACCESO
+     BD: usuarios.email, usuarios.password_hash (se compara en el servidor), usuarios.activo = 1
+     Tras el acceso correcto: actualizar usuarios.ultimo_acceso y cargar roles/permisos
+     ===================================================== -->
+  <section class="login-form">
+    <h1>Iniciar sesión</h1>
+    <p class="login-ayuda">Ingresa con tu correo y contraseña.</p>
+ 
+    <form id="form-login" novalidate>
+      <div class="login-error" id="login-error" role="alert" hidden></div>
+ 
+      <div class="campo">
+        <label for="login-email">Correo electrónico</label>
+        <input id="login-email" name="email" type="email" maxlength="120" autocomplete="username" required> <!-- usuarios.email -->
+      </div>
+ 
+      <div class="campo">
+        <label for="login-password">Contraseña</label>
+        <input id="login-password" name="password" type="password" autocomplete="current-password" required> <!-- se verifica contra usuarios.password_hash -->
+      </div>
+ 
+      <button class="btn-primary login-boton" type="submit">Iniciar sesión</button>
+    </form>
+  </section>
+ 
+</main>
+ 
+<script src="script.js"></script>
+ 
+</body>
+</html>
+ 
