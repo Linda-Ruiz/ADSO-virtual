@@ -7,9 +7,9 @@
   <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
- 
+
 <div class="app">
- 
+
   <!-- =====================================================
      1. MENÚ LATERAL
      BD: permisos.modulo (cada enlace = un módulo) + rol_permiso (qué ve cada rol)
@@ -26,9 +26,9 @@
       <a href="configuracion.html"><span class="icon">⚙️</span> Configuración</a>
     </nav>
   </aside>
- 
+
   <main class="main">
- 
+
     <!-- =====================================================
      2. BARRA SUPERIOR
      BD: usuarios.nombres, usuarios.apellidos, roles.nombre (usuario en sesión)
@@ -41,51 +41,72 @@
       <div class="right">
         <div class="notifications">🔔 Notificaciones</div>
         <div class="avatar">LR</div> <!-- iniciales: usuarios.nombres + usuarios.apellidos -->
+        <a class="cerrar-sesion" href="inicio-sesion.html">Cerrar sesión</a>
       </div>
     </header>
- 
+
     <div class="content">
- 
+
       <p class="breadcrumb">Inicio &gt; Tratamientos</p>
       <h1>Gestión de Tratamientos</h1>
- 
+
       <!-- =====================================================
      3. FORMULARIO: TRATAMIENTO
      BD: tabla tratamientos (INSERT / UPDATE)
-     PROVISIONAL: confirmar columnas con el script SQL real de esta tabla: id_tratamiento, nombre, descripcion, duracion_minutos, precio, activo
+     Columnas verificadas con bellasoft.sql: id_categoria, nombre, descripcion, duracion_minutos, precio_base, numero_sesiones_recomendadas, requiere_consentimiento, activo
      ===================================================== -->
       <form class="formulario-paciente" id="form-tratamiento" novalidate>
         <section class="form-card">
           <h3>Información del tratamiento</h3>
           <div class="formulario">
-          <div class="campo">
-            <label for="t-nombre">Nombre</label>
-            <input id="t-nombre" name="nombre" type="text" maxlength="100" required> <!-- tratamientos.nombre -->
-          </div>
- 
-          <div class="campo">
-            <label for="t-activo">Estado</label>
-            <select id="t-activo" name="activo"><option value="1">Activo</option><option value="0">Inactivo</option></select> <!-- tratamientos.activo TINYINT(1) -->
-          </div>
- 
-          <div class="campo">
-            <label for="t-duracion">Duración (minutos)</label>
-            <input id="t-duracion" name="duracion_minutos" type="number" min="5" step="5" required> <!-- tratamientos.duracion_minutos INT -->
-          </div>
- 
-          <div class="campo">
-            <label for="t-precio">Precio (COP)</label>
-            <input id="t-precio" name="precio" type="number" min="0" step="1000" required> <!-- tratamientos.precio DECIMAL(12,2) -->
-          </div>
- 
-          <div class="campo campo-completo">
-            <label for="t-descripcion">Descripción</label>
-            <textarea id="t-descripcion" name="descripcion" rows="3"></textarea> <!-- tratamientos.descripcion -->
-          </div>
- 
+            <div class="campo">
+              <label for="t-nombre">Nombre</label>
+              <input id="t-nombre" name="nombre" type="text" maxlength="120" required> <!-- tratamientos.nombre VARCHAR(120) -->
+            </div>
+
+            <div class="campo">
+              <label for="t-categoria">Categoría</label>
+              <select id="t-categoria" name="id_categoria" required> <!-- tratamientos.id_categoria (FK -> categorias_tratamiento) -->
+                <option value="">Seleccionar categoría</option>
+                <option value="1">Facial</option>
+                <option value="2">Corporal</option>
+                <option value="3">Láser</option>
+                <option value="4">Inyectables</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="t-duracion">Duración (minutos)</label>
+              <input id="t-duracion" name="duracion_minutos" type="number" min="5" step="5" required> <!-- tratamientos.duracion_minutos INT -->
+            </div>
+
+            <div class="campo">
+              <label for="t-precio">Precio base (COP)</label>
+              <input id="t-precio" name="precio_base" type="number" min="0" step="1000" required> <!-- tratamientos.precio_base DECIMAL(12,2) -->
+            </div>
+
+            <div class="campo">
+              <label for="t-sesiones">Sesiones recomendadas</label>
+              <input id="t-sesiones" name="numero_sesiones_recomendadas" type="number" min="1" value="1"> <!-- tratamientos.numero_sesiones_recomendadas INT -->
+            </div>
+
+            <div class="campo">
+              <label for="t-activo">Estado</label>
+              <select id="t-activo" name="activo"><option value="1">Activo</option><option value="0">Inactivo</option></select> <!-- tratamientos.activo TINYINT(1) -->
+            </div>
+
+            <div class="campo campo-check campo-completo">
+              <label for="t-consentimiento"><input id="t-consentimiento" name="requiere_consentimiento" type="checkbox" value="1"> Requiere consentimiento informado</label> <!-- tratamientos.requiere_consentimiento TINYINT(1) -->
+            </div>
+
+            <div class="campo campo-completo">
+              <label for="t-descripcion">Descripción</label>
+              <textarea id="t-descripcion" name="descripcion" rows="3"></textarea> <!-- tratamientos.descripcion -->
+            </div>
+
           </div>
         </section>
- 
+
         <!-- =====================================================
      4. BOTONES DEL FORMULARIO
      BD: Guardar = INSERT | Actualizar = UPDATE | Nuevo = limpiar
@@ -96,7 +117,7 @@
           <button class="nuevo" type="reset">Nuevo</button>
         </div>
       </form>
- 
+
       <!-- =====================================================
      5. TABLA: TRATAMIENTOS REGISTRADOS
      BD: SELECT FROM tratamientos ORDER BY nombre
@@ -104,43 +125,51 @@
       <section class="table-card">
         <h3>Tratamientos registrados</h3>
         <div class="tabla-scroll">
-        <table class="tabla-datos">
-          <thead>
-            <tr><th>Tratamiento</th><th>Descripción</th><th>Duración</th><th class="num">Precio</th><th>Estado</th><th>Acciones</th></tr>
-          </thead>
-          <tbody>
+          <table class="tabla-datos">
+            <thead>
+            <tr><th>Tratamiento</th><th>Categoría</th><th>Descripción</th><th>Duración</th><th class="num">Precio base</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
             <tr data-id="1">
-              <td>Facial</td><td>Limpieza profunda e hidratación</td><td>60 min</td><td class="num">$120.000</td>
+              <td>Facial</td><td>Facial</td><td>Limpieza e hidratación facial</td><td>60 min</td><td class="num">$120.000</td>
               <td><span class="badge badge-activo">Activo</span></td>
               <td class="acciones-tabla"><button class="editar" type="button">Editar</button><button class="eliminar" type="button">Desactivar</button></td>
             </tr>
             <tr data-id="2">
-              <td>Botox</td><td>Aplicación de toxina botulínica</td><td>45 min</td><td class="num">$650.000</td>
+              <td>Botox</td><td>Inyectables</td><td>Aplicación de toxina botulínica</td><td>45 min</td><td class="num">$650.000</td>
               <td><span class="badge badge-activo">Activo</span></td>
               <td class="acciones-tabla"><button class="editar" type="button">Editar</button><button class="eliminar" type="button">Desactivar</button></td>
             </tr>
             <tr data-id="3">
-              <td>Depilación láser</td><td>Sesión por zona</td><td>30 min</td><td class="num">$180.000</td>
+              <td>Depilación láser</td><td>Láser</td><td>Depilación láser por zona</td><td>45 min</td><td class="num">$180.000</td>
               <td><span class="badge badge-activo">Activo</span></td>
               <td class="acciones-tabla"><button class="editar" type="button">Editar</button><button class="eliminar" type="button">Desactivar</button></td>
             </tr>
             <tr data-id="4">
-              <td>Peeling químico</td><td>Renovación celular</td><td>50 min</td><td class="num">$240.000</td>
+              <td>Peeling químico</td><td>Facial</td><td>Renovación celular</td><td>50 min</td><td class="num">$240.000</td>
               <td><span class="badge badge-inactivo">Inactivo</span></td>
               <td class="acciones-tabla"><button class="editar" type="button">Editar</button><button class="eliminar" type="button">Desactivar</button></td>
             </tr>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
         </div>
       </section>
     </div>
- 
+
+    <!-- =====================================================
+     PIE DE PÁGINA
+     Datos del aprendiz para identificar la evidencia
+     ===================================================== -->
+    <footer class="pie">
+      <p>BellaSoft · Sistema de gestión para clínica estética</p>
+      <p>Aprendiz: Linda Camila Ruiz Ayala · Ficha: 3186695</p>
+    </footer>
   </main>
 </div>
- 
+
 <!-- Lógica de la página (pendiente de implementar) -->
 <script src="script.js"></script>
- 
+
 </body>
 </html>
  

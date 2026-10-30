@@ -1,6 +1,7 @@
 /* =====================================================
    BellaSoft - Hoja de estilos global
-   Archivos que la usan: index.html, pacientes.html, citas.html
+   Archivos que la usan: todas las páginas (index, pacientes, citas, tratamientos,
+   facturacion, reportes, configuracion y login)
    Organización: una sección por bloque de la interfaz,
    con la tabla de la BD a la que corresponde (si aplica).
    ===================================================== */
@@ -522,9 +523,29 @@ table.citas td {
   font-size: 14px;
 }
 
-.estado-activo {
-  color: #059669;
+/* BD: citas.estado ENUM('Programada','Confirmada','Atendida','Cancelada','No asistió') */
+.estado-programada,
+.estado-confirmada,
+.estado-atendida,
+.estado-cancelada,
+.estado-noasistio {
   font-weight: 600;
+}
+.estado-programada { color: #0369a1; }
+.estado-confirmada { color: #059669; }
+.estado-atendida   { color: #475569; }
+.estado-cancelada  { color: #b91c1c; }
+.estado-noasistio  { color: #b45309; }
+/* table.citas td pinta todas las celdas; estas reglas lo sobrescriben solo en la columna Estado */
+table.citas td.estado-programada { color: #0369a1; }
+table.citas td.estado-confirmada { color: #059669; }
+table.citas td.estado-atendida   { color: #475569; }
+table.citas td.estado-cancelada  { color: #b91c1c; }
+table.citas td.estado-noasistio  { color: #b45309; }
+
+/* Buscador de paciente: deja espacio para la lupa */
+.form-grid .field input {
+  padding-left: 34px;
 }
 
 .acciones {
@@ -1169,54 +1190,44 @@ a:focus-visible {
 
 
 /* =====================================================
-   16. CÓDIGO HEREDADO SIN USO
-   Ninguna página actual usa estas clases (.header y
-   derivadas). Se conservan solo por si se reutilizan;
-   se pueden eliminar sin afectar nada.
+   16. PIE DE PÁGINA Y ENLACE DE SESIÓN
+   Aplica a: todas las páginas con menú lateral
    ===================================================== */
-.header {
-  background: #EEF2F7;
-  border-bottom: 1px solid #D9DEE5;
+.pie {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 35px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
-}
-
-.header .brand {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.brand-name {
-  font-size: 22px;
-  font-weight: 700;
-  color: #1F2937;
-}
-
-.brand-name .dot {
-  color: #F28CA8;
-  font-size: 11px;
-}
-
-.brand-sub {
+  gap: 8px 24px;
+  padding: 16px 32px;
+  border-top: 1px solid #f1f5f9;
+  background: #ffffff;
   font-size: 13px;
-  color: #6B7280;
+  color: #64748b;
 }
 
-.user-area {
-  display: flex;
-  align-items: center;
-  gap: 18px;
+.pie p {
+  margin: 0;
 }
 
-.notif {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  color: #6B7280;
-  cursor: pointer;
+.cerrar-sesion {
+  font-size: 13px;
+  color: #9f1239;
+  text-decoration: none;
 }
+
+.cerrar-sesion:hover {
+  text-decoration: underline;
+}
+
+/* Permisos que no existen en la BD (matriz de configuración) */
+.matriz-permisos .no-aplica {
+  color: #94a3b8;
+}
+
+/* Anchos de las barras de reportes (antes eran estilos en línea) */
+.ancho-100 { width: 100%; }
+.ancho-55  { width: 55%; }
+.ancho-50  { width: 50%; }
+.ancho-37  { width: 37%; }
+.ancho-22  { width: 22%; }
+.ancho-8   { width: 8%; }

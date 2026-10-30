@@ -41,6 +41,7 @@
       <div class="right">
         <div class="notifications">🔔 Notificaciones</div>
         <div class="avatar">LR</div> <!-- iniciales: usuarios.nombres + usuarios.apellidos -->
+        <a class="cerrar-sesion" href="inicio-sesion.html">Cerrar sesión</a>
       </div>
     </header>
 
@@ -51,44 +52,55 @@
 
       <!-- =====================================================
      3. FORMULARIO: AGENDAR CITA
-     BD: tabla citas (INSERT)
-     PENDIENTE: confirmar nombres de columnas con la sección de citas del script SQL
+     BD: tabla citas (INSERT) - columnas verificadas con bellasoft.sql
      ===================================================== -->
       <section class="form-card">
-        <div class="form-grid">
+        <form id="form-cita" novalidate>
+          <div class="form-grid">
 
-          <label for="paciente">Paciente</label>
-          <div class="field">
-            <span class="icon-search">🔍</span>
-            <input id="paciente" type="text" placeholder="Buscar por nombre o documento"> <!-- citas.id_paciente (FK -> pacientes) -->
+            <label for="paciente">Paciente</label>
+            <div class="field">
+              <span class="icon-search">🔍</span>
+              <input id="paciente" name="id_paciente" type="text" placeholder="Buscar por nombre o documento" required> <!-- citas.id_paciente (FK -> pacientes) -->
+            </div>
+
+            <label for="tratamiento">Tratamiento</label>
+            <select id="tratamiento" name="id_tratamiento" required> <!-- citas.id_tratamiento (FK -> tratamientos); las opciones deben venir de la BD -->
+              <option value="">Seleccionar tratamiento</option>
+              <option value="1">Facial</option>
+              <option value="2">Botox</option>
+              <option value="3">Depilación láser</option>
+            </select>
+
+            <label for="profesional">Profesional</label>
+            <select id="profesional" name="id_profesional" required> <!-- citas.id_profesional (FK -> usuarios con rol Profesional) -->
+              <option value="">Seleccionar profesional</option>
+              <option value="4">Sofía Gómez</option>
+            </select>
+
+            <label for="fecha">Fecha</label>
+            <input id="fecha" name="fecha" type="date" required> <!-- citas.fecha -->
+
+            <label for="hora-inicio">Hora de inicio</label>
+            <input id="hora-inicio" name="hora_inicio" type="time" required> <!-- citas.hora_inicio -->
+
+            <label for="hora-fin">Hora de fin</label>
+            <input id="hora-fin" name="hora_fin" type="time" required> <!-- citas.hora_fin -->
+
+            <label for="estado">Estado</label>
+            <select id="estado" name="estado"> <!-- citas.estado ENUM('Programada','Confirmada','Atendida','Cancelada','No asistió') -->
+              <option value="Programada">Programada</option>
+              <option value="Confirmada">Confirmada</option>
+              <option value="Atendida">Atendida</option>
+              <option value="Cancelada">Cancelada</option>
+              <option value="No asistió">No asistió</option>
+            </select>
+
           </div>
-
-          <label for="fecha">Fecha</label>
-          <input id="fecha" type="date"> <!-- citas.fecha -->
-
-          <label for="tratamiento">Tratamiento</label>
-          <select id="tratamiento"> <!-- citas.id_tratamiento (FK -> tratamientos); opciones deben venir de la BD -->
-            <option value="">Seleccionar tratamiento</option>
-            <option>Facial</option>
-            <option>Botox</option>
-            <option>Depilación láser</option>
-          </select>
-
-          <label for="hora">Hora</label>
-          <input id="hora" type="time"> <!-- citas.hora -->
-
-          <label for="estado">Estado</label>
-          <select id="estado"> <!-- citas.estado (PENDIENTE: alinear valores con el ENUM de la BD) -->
-            <option value="">Seleccionar estado</option>
-            <option>Activo</option>
-            <option>Cancelado</option>
-            <option>Completado</option>
-          </select>
-
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn-primary">Agendar cita</button>
-        </div>
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">Agendar cita</button>
+          </div>
+        </form>
       </section>
 
       <section class="lower">
@@ -123,34 +135,34 @@
           <div class="table-wrap">
             <table class="citas">
               <thead>
-                <tr>
-                  <th>Hora</th>         <!-- citas.hora -->
-                  <th>Paciente</th>     <!-- pacientes.nombres + apellidos -->
-                  <th>Tratamiento</th>  <!-- tratamientos.nombre -->
-                  <th>Estado</th>       <!-- citas.estado -->
-                  <th>Acciones</th>     <!-- Editar = UPDATE | Cancelar = estado 'Cancelado' -->
-                </tr>
+              <tr>
+                <th>Hora</th>         <!-- citas.hora_inicio – citas.hora_fin -->
+                <th>Paciente</th>     <!-- pacientes.nombres + apellidos -->
+                <th>Tratamiento</th>  <!-- tratamientos.nombre -->
+                <th>Estado</th>       <!-- citas.estado -->
+                <th>Acciones</th>     <!-- Editar = UPDATE | Cancelar = estado 'Cancelada' -->
+              </tr>
               </thead>
               <tbody>
               <tr>
-                <td>09:00</td><td>Laura Díaz</td><td>Facial</td>
-                <td class="estado-activo">Activo</td>
+                <td>09:00 – 10:00</td><td>Laura Díaz</td><td>Facial</td>
+                <td class="estado-confirmada">Confirmada</td>
                 <td><div class="acciones">
                   <button class="btn-editar" type="button">Editar</button>
                   <button class="btn-cancelar" type="button">Cancelar</button>
                 </div></td>
               </tr>
               <tr>
-                <td>10:30</td><td>Miguel Molina</td><td>Botox</td>
-                <td class="estado-activo">Activo</td>
+                <td>10:30 – 11:15</td><td>Miguel Molina</td><td>Botox</td>
+                <td class="estado-programada">Programada</td>
                 <td><div class="acciones">
                   <button class="btn-editar" type="button">Editar</button>
                   <button class="btn-cancelar" type="button">Cancelar</button>
                 </div></td>
               </tr>
               <tr>
-                <td>11:45</td><td>Lola Lolita</td><td>Depilación láser</td>
-                <td class="estado-activo">Activo</td>
+                <td>11:45 – 12:30</td><td>Lola Lolita</td><td>Depilación láser</td>
+                <td class="estado-programada">Programada</td>
                 <td><div class="acciones">
                   <button class="btn-editar" type="button">Editar</button>
                   <button class="btn-cancelar" type="button">Cancelar</button>
@@ -164,6 +176,14 @@
       </section>
     </div>
 
+    <!-- =====================================================
+     PIE DE PÁGINA
+     Datos del aprendiz para identificar la evidencia
+     ===================================================== -->
+    <footer class="pie">
+      <p>BellaSoft · Sistema de gestión para clínica estética</p>
+      <p>Aprendiz: Linda Camila Ruiz Ayala · Ficha: 3186695</p>
+    </footer>
   </main>
 </div>
 

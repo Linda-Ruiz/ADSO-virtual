@@ -7,9 +7,9 @@
   <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
- 
+
 <div class="app">
- 
+
   <!-- =====================================================
      1. MENÚ LATERAL
      BD: permisos.modulo (cada enlace = un módulo) + rol_permiso (qué ve cada rol)
@@ -26,9 +26,9 @@
       <a href="configuracion.html"><span class="icon">⚙️</span> Configuración</a>
     </nav>
   </aside>
- 
+
   <main class="main">
- 
+
     <!-- =====================================================
      2. BARRA SUPERIOR
      BD: usuarios.nombres, usuarios.apellidos, roles.nombre (usuario en sesión)
@@ -41,97 +41,182 @@
       <div class="right">
         <div class="notifications">🔔 Notificaciones</div>
         <div class="avatar">LR</div> <!-- iniciales: usuarios.nombres + usuarios.apellidos -->
+        <a class="cerrar-sesion" href="inicio-sesion.html">Cerrar sesión</a>
       </div>
     </header>
- 
+
     <div class="content">
- 
+
       <div class="breadcrumb">Inicio &gt; Gestión de Pacientes</div>
       <h1>Gestión de Pacientes</h1>
- 
+
       <!-- =====================================================
      3. BUSCADOR
      BD: pacientes.nombres, pacientes.apellidos, pacientes.numero_documento
      ===================================================== -->
       <section class="busqueda">
-        <input type="text" placeholder="Buscar por nombre o documento">
+        <input id="buscar-paciente" type="text" placeholder="Buscar por nombre o documento" aria-label="Buscar paciente por nombre o documento">
         <button type="button">Buscar</button>
       </section>
- 
+
       <!-- =====================================================
      4. FORMULARIO: INFORMACIÓN DEL PACIENTE
-     BD: tabla pacientes
-     PENDIENTE: ajustar campos al esquema (ver notas junto a cada campo)
+     BD: tabla pacientes (columnas verificadas con bellasoft.sql)
      ===================================================== -->
-      <section class="form-card">
-        <h3>Información del Paciente</h3>
- 
-        <form class="formulario">
-          <div class="campo">
-            <label>Nombre</label>
-            <input type="text"> <!-- pacientes.nombres + pacientes.apellidos (PENDIENTE: separar en dos campos) -->
+      <form class="formulario-paciente" id="form-paciente" novalidate>
+        <section class="form-card">
+          <h3>Información del paciente</h3>
+          <div class="formulario">
+            <div class="campo">
+              <label for="p-nombres">Nombres</label>
+              <input id="p-nombres" name="nombres" type="text" maxlength="100" required> <!-- pacientes.nombres VARCHAR(100) -->
+            </div>
+
+            <div class="campo">
+              <label for="p-apellidos">Apellidos</label>
+              <input id="p-apellidos" name="apellidos" type="text" maxlength="100" required> <!-- pacientes.apellidos VARCHAR(100) -->
+            </div>
+
+            <div class="campo">
+              <label for="p-tipo-doc">Tipo de documento</label>
+              <select id="p-tipo-doc" name="tipo_documento" required> <!-- pacientes.tipo_documento ENUM('CC','TI','CE','PA','RC') -->
+                <option value="">Seleccionar tipo</option>
+                <option value="CC">CC - Cédula de ciudadanía</option>
+                <option value="TI">TI - Tarjeta de identidad</option>
+                <option value="CE">CE - Cédula de extranjería</option>
+                <option value="PA">PA - Pasaporte</option>
+                <option value="RC">RC - Registro civil</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="p-documento">Número de documento</label>
+              <input id="p-documento" name="numero_documento" type="text" maxlength="20" required> <!-- pacientes.numero_documento (único junto con tipo_documento) -->
+            </div>
+
+            <div class="campo">
+              <label for="p-nacimiento">Fecha de nacimiento</label>
+              <input id="p-nacimiento" name="fecha_nacimiento" type="date" required> <!-- pacientes.fecha_nacimiento -->
+            </div>
+
+            <div class="campo">
+              <label for="p-edad">Edad</label>
+              <input id="p-edad" type="number" readonly> <!-- NO es columna: se calcula desde fecha_nacimiento (vista_pacientes.edad) -->
+            </div>
+
+            <div class="campo">
+              <label for="p-sexo">Sexo</label>
+              <select id="p-sexo" name="sexo"> <!-- pacientes.sexo ENUM('Femenino','Masculino','Otro') NULL -->
+                <option value="">Seleccionar</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+
+            <div class="campo">
+              <label for="p-estado">Estado</label>
+              <select id="p-estado" name="estado"> <!-- pacientes.estado ENUM('Activo','Inactivo') -->
+                <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+              </select>
+            </div>
           </div>
- 
-          <div class="campo">
-            <label>Tipo de documento</label>
-            <select><option>CC</option><option>CE</option><option>Pasaporte</option></select> <!-- pacientes.tipo_documento ENUM('CC','TI','CE','PA','RC') (PENDIENTE: faltan TI y RC; 'Pasaporte' = 'PA') -->
+        </section>
+
+        <section class="form-card">
+          <h3>Contacto</h3>
+          <div class="formulario">
+            <div class="campo">
+              <label for="p-telefono">Teléfono</label>
+              <input id="p-telefono" name="telefono" type="tel" maxlength="20"> <!-- pacientes.telefono -->
+            </div>
+
+            <div class="campo">
+              <label for="p-email">Correo electrónico</label>
+              <input id="p-email" name="email" type="email" maxlength="120"> <!-- pacientes.email -->
+            </div>
+
+            <div class="campo">
+              <label for="p-direccion">Dirección</label>
+              <input id="p-direccion" name="direccion" type="text" maxlength="150"> <!-- pacientes.direccion -->
+            </div>
+
+            <div class="campo">
+              <label for="p-ciudad">Ciudad</label>
+              <input id="p-ciudad" name="ciudad" type="text" maxlength="80"> <!-- pacientes.ciudad -->
+            </div>
+
+            <div class="campo">
+              <label for="p-emerg-nombre">Contacto de emergencia (nombre)</label>
+              <input id="p-emerg-nombre" name="contacto_emergencia_nombre" type="text" maxlength="100"> <!-- pacientes.contacto_emergencia_nombre -->
+            </div>
+
+            <div class="campo">
+              <label for="p-emerg-telefono">Contacto de emergencia (teléfono)</label>
+              <input id="p-emerg-telefono" name="contacto_emergencia_telefono" type="tel" maxlength="20"> <!-- pacientes.contacto_emergencia_telefono -->
+            </div>
+
+            <div class="campo campo-completo">
+              <label for="p-observaciones">Observaciones</label>
+              <textarea id="p-observaciones" name="observaciones" rows="3"></textarea> <!-- pacientes.observaciones -->
+            </div>
+
+            <div class="campo campo-check campo-completo">
+              <label for="p-acepta"><input id="p-acepta" name="acepta_tratamiento_datos" type="checkbox" value="1"> El paciente acepta el tratamiento de sus datos personales</label> <!-- pacientes.acepta_tratamiento_datos TINYINT(1) -->
+            </div>
           </div>
- 
-          <div class="campo">
-            <label>Documento</label>
-            <input type="text"> <!-- pacientes.numero_documento -->
+        </section>
+
+        <!-- =====================================================
+     HISTORIA CLÍNICA
+     BD: tabla historia_clinica (1 a 1 con pacientes: id_paciente UNIQUE)
+     ===================================================== -->
+        <section class="form-card">
+          <h3>Historia clínica</h3>
+          <div class="formulario">
+            <div class="campo">
+              <label for="h-alergias">Alergias</label>
+              <textarea id="h-alergias" name="alergias" rows="3"></textarea> <!-- historia_clinica.alergias -->
+            </div>
+
+            <div class="campo">
+              <label for="h-enfermedades">Enfermedades previas</label>
+              <textarea id="h-enfermedades" name="enfermedades_previas" rows="3"></textarea> <!-- historia_clinica.enfermedades_previas -->
+            </div>
+
+            <div class="campo">
+              <label for="h-medicamentos">Medicamentos actuales</label>
+              <textarea id="h-medicamentos" name="medicamentos_actuales" rows="3"></textarea> <!-- historia_clinica.medicamentos_actuales -->
+            </div>
+
+            <div class="campo">
+              <label for="h-cirugias">Cirugías previas</label>
+              <textarea id="h-cirugias" name="cirugias_previas" rows="3"></textarea> <!-- historia_clinica.cirugias_previas -->
+            </div>
+
+            <div class="campo">
+              <label for="h-tipo-piel">Tipo de piel</label>
+              <input id="h-tipo-piel" name="tipo_piel" type="text" maxlength="50"> <!-- historia_clinica.tipo_piel -->
+            </div>
+
+            <div class="campo campo-check">
+              <label for="h-embarazo"><input id="h-embarazo" name="embarazo_lactancia" type="checkbox" value="1"> Embarazo o lactancia</label> <!-- historia_clinica.embarazo_lactancia TINYINT(1) -->
+            </div>
           </div>
- 
-          <div class="campo">
-            <label>Fecha de nacimiento</label>
-            <input type="date"> <!-- pacientes.fecha_nacimiento -->
-          </div>
- 
-          <div class="campo">
-            <label>Edad</label>
-            <input type="number" readonly> <!-- NO es columna: se calcula desde fecha_nacimiento -->
-          </div>
- 
-          <div class="campo">
-            <label>Teléfono</label>
-            <input type="text"> <!-- pacientes.telefono -->
-          </div>
- 
-          <div class="campo">
-            <label>Correo electrónico</label>
-            <input type="email"> <!-- pacientes.email -->
-          </div>
- 
-          <div class="campo">
-            <label>Contacto de emergencia</label>
-            <input type="text"> <!-- pacientes.contacto_emergencia_nombre + contacto_emergencia_telefono (PENDIENTE: separar) -->
-          </div>
- 
-          <div class="campo">
-            <label>Estado</label>
-            <select><option>Activo</option><option>Inactivo</option></select> <!-- pacientes.estado ENUM('Activo','Inactivo') -->
-          </div>
- 
-          <div class="campo campo-completo">
-            <label>Observaciones</label>
-            <textarea rows="4"></textarea> <!-- pacientes.observaciones -->
-          </div>
- 
-          <!-- FALTAN en el formulario (existen en BD): sexo, direccion, ciudad, acepta_tratamiento_datos -->
-          <!-- FALTA bloque historia_clinica: alergias, enfermedades_previas, medicamentos_actuales, cirugias_previas, embarazo_lactancia, tipo_piel -->
- 
-          <!-- =====================================================
+        </section>
+
+        <!-- =====================================================
      5. BOTONES DEL FORMULARIO
      BD: Guardar = INSERT | Actualizar = UPDATE | Nuevo = limpiar
      ===================================================== -->
-          <div class="botones-formulario">
-            <button class="guardar" type="submit">Guardar</button>
-            <button class="nuevo" type="reset">Nuevo</button>
-            <button class="actualizar" type="button">Actualizar</button>
-          </div>
-        </form>
-      </section>
- 
+        <div class="botones-formulario">
+          <button class="guardar" type="submit">Guardar</button>
+          <button class="nuevo" type="reset">Nuevo</button>
+          <button class="actualizar" type="button">Actualizar</button>
+        </div>
+      </form>
+
       <!-- =====================================================
      6. TABLA: PACIENTES REGISTRADOS
      BD: SELECT FROM pacientes ORDER BY fecha_registro DESC
@@ -140,36 +225,44 @@
         <h3>Pacientes Registrados</h3>
         <table class="tabla-pacientes">
           <thead>
-            <tr>
-              <th>Paciente</th>        <!-- CONCAT(nombres,' ',apellidos) -->
-              <th>Documento</th>       <!-- numero_documento -->
-              <th>Teléfono</th>        <!-- telefono -->
-              <th>Correo</th>          <!-- email -->
-              <th>Fecha Registro</th>  <!-- fecha_registro -->
-              <th>Estado</th>          <!-- estado -->
-              <th>Acciones</th>        <!-- UPDATE / DELETE (o estado = 'Inactivo') -->
-            </tr>
+          <tr>
+            <th>Paciente</th>        <!-- CONCAT(nombres,' ',apellidos) -->
+            <th>Documento</th>       <!-- numero_documento -->
+            <th>Teléfono</th>        <!-- telefono -->
+            <th>Correo</th>          <!-- email -->
+            <th>Fecha Registro</th>  <!-- fecha_registro -->
+            <th>Estado</th>          <!-- estado -->
+            <th>Acciones</th>        <!-- UPDATE / DELETE (o estado = 'Inactivo') -->
+          </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Ana Ruiz</td><td>1002456</td><td>3001234567</td><td>ana@gmail.com</td><td>01/12/2025</td>
-              <td><span class="badge badge-activo">Activo</span></td>
-              <td class="acciones-tabla">
-                <button class="editar" type="button">Editar</button>
-                <button class="eliminar" type="button">Eliminar</button>
-              </td>
-            </tr>
+          <tr>
+            <td>Ana Ruiz</td><td>1002456</td><td>3001234567</td><td>ana@gmail.com</td><td>01/12/2025</td>
+            <td><span class="badge badge-activo">Activo</span></td>
+            <td class="acciones-tabla">
+              <button class="editar" type="button">Editar</button>
+              <button class="eliminar" type="button">Eliminar</button>
+            </td>
+          </tr>
           </tbody>
         </table>
       </section>
     </div>
- 
+
+    <!-- =====================================================
+     PIE DE PÁGINA
+     Datos del aprendiz para identificar la evidencia
+     ===================================================== -->
+    <footer class="pie">
+      <p>BellaSoft · Sistema de gestión para clínica estética</p>
+      <p>Aprendiz: Linda Camila Ruiz Ayala · Ficha: 3186695</p>
+    </footer>
   </main>
 </div>
- 
+
 <!-- Lógica de la página (pendiente de implementar) -->
 <script src="script.js"></script>
- 
+
 </body>
 </html>
  

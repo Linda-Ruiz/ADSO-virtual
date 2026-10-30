@@ -41,6 +41,7 @@
       <div class="right">
         <div class="notifications">🔔 Notificaciones</div>
         <div class="avatar">LR</div> <!-- iniciales: usuarios.nombres + usuarios.apellidos -->
+        <a class="cerrar-sesion" href="inicio-sesion.html">Cerrar sesión</a>
       </div>
     </header>
 
@@ -52,31 +53,37 @@
       <!-- =====================================================
      3. DATOS DE LA FACTURA
      BD: tabla facturas (INSERT)
-     PROVISIONAL: confirmar columnas con el script SQL real de esta tabla: id_factura, id_paciente, fecha_emision, metodo_pago, descuento, total, estado
+     Columnas verificadas con bellasoft.sql: numero_factura, id_paciente, fecha_emision, subtotal, descuento, impuesto, total, estado_pago.
+     El método de pago NO está en facturas: se guarda en la tabla pagos (pagos.metodo_pago)
      ===================================================== -->
       <form class="formulario-paciente" id="form-factura" novalidate>
         <section class="form-card">
           <h3>Datos de la factura</h3>
           <div class="formulario">
-          <div class="campo campo-completo">
-            <label for="f-paciente">Paciente</label>
-            <input id="f-paciente" name="id_paciente" type="search" placeholder="Buscar por nombre o documento" required> <!-- facturas.id_paciente (FK -> pacientes) -->
-          </div>
+            <div class="campo campo-completo">
+              <label for="f-paciente">Paciente</label>
+              <input id="f-paciente" name="id_paciente" type="search" placeholder="Buscar por nombre o documento" required> <!-- facturas.id_paciente (FK -> pacientes) -->
+            </div>
 
-          <div class="campo">
-            <label for="f-fecha">Fecha de emisión</label>
-            <input id="f-fecha" name="fecha_emision" type="date" required> <!-- facturas.fecha_emision -->
-          </div>
+            <div class="campo">
+              <label for="f-numero">N.º de factura</label>
+              <input id="f-numero" name="numero_factura" type="text" placeholder="Se genera al guardar" readonly> <!-- facturas.numero_factura VARCHAR(20) (único) -->
+            </div>
 
-          <div class="campo">
-            <label for="f-metodo">Método de pago</label>
-            <select id="f-metodo" name="metodo_pago"><option>Efectivo</option><option>Tarjeta</option><option>Transferencia</option></select> <!-- facturas.metodo_pago -->
-          </div>
+            <div class="campo">
+              <label for="f-fecha">Fecha de emisión</label>
+              <input id="f-fecha" name="fecha_emision" type="date" required> <!-- facturas.fecha_emision -->
+            </div>
 
-          <div class="campo">
-            <label for="f-estado">Estado</label>
-            <select id="f-estado" name="estado"><option>Pendiente</option><option>Pagada</option><option>Anulada</option></select> <!-- facturas.estado -->
-          </div>
+            <div class="campo">
+              <label for="f-metodo">Método de pago</label>
+              <select id="f-metodo" name="metodo_pago"><option>Efectivo</option><option>Tarjeta</option><option>Transferencia</option><option>Nequi/Daviplata</option></select> <!-- pagos.metodo_pago ENUM (se registra en la tabla pagos) -->
+            </div>
+
+            <div class="campo">
+              <label for="f-estado">Estado de pago</label>
+              <select id="f-estado" name="estado_pago"><option>Pendiente</option><option>Parcial</option><option>Pagada</option><option>Anulada</option></select> <!-- facturas.estado_pago ENUM('Pendiente','Parcial','Pagada','Anulada') -->
+            </div>
 
           </div>
         </section>
@@ -89,20 +96,20 @@
         <section class="form-card">
           <h3>Detalle</h3>
           <div class="tabla-scroll">
-          <table class="tabla-datos detalle-factura" id="detalle-factura">
-            <thead>
+            <table class="tabla-datos detalle-factura" id="detalle-factura">
+              <thead>
               <tr><th>Tratamiento</th><th class="num">Cantidad</th><th class="num">Precio unitario</th><th class="num">Subtotal</th><th></th></tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
               <tr class="linea">
-                <td><select name="id_tratamiento[]" aria-label="Tratamiento"><option value="" data-precio="0">Seleccionar tratamiento</option><option data-precio="120000">Facial</option><option data-precio="650000">Botox</option><option data-precio="180000">Depilación láser</option></select></td>
+                <td><select name="id_tratamiento[]" aria-label="Tratamiento"><option value="" data-precio="0">Seleccionar tratamiento</option><option value="1" data-precio="120000">Facial</option><option value="2" data-precio="650000">Botox</option><option value="3" data-precio="180000">Depilación láser</option></select></td>
                 <td class="num"><input name="cantidad[]" type="number" min="1" value="1" aria-label="Cantidad"></td>
                 <td class="num"><input name="precio_unitario[]" type="number" min="0" value="0" readonly tabindex="-1" aria-label="Precio unitario"></td>
                 <td class="num subtotal-linea">$0</td>
                 <td><button class="eliminar quitar-linea" type="button" aria-label="Quitar línea">Quitar</button></td>
               </tr>
-            </tbody>
-          </table>
+              </tbody>
+            </table>
           </div>
           <button class="btn-secundario" type="button" id="btn-agregar-linea">+ Agregar tratamiento</button>
 
@@ -115,7 +122,7 @@
 
         <!-- =====================================================
      5. BOTONES DEL FORMULARIO
-     BD: Guardar = INSERT en facturas + factura_detalle
+     BD: Guardar = INSERT en facturas + factura_detalle (y en pagos si hay un pago registrado)
      ===================================================== -->
         <div class="botones-formulario">
           <button class="guardar" type="submit">Guardar factura</button>
@@ -130,11 +137,11 @@
       <section class="table-card">
         <h3>Facturas emitidas</h3>
         <div class="tabla-scroll">
-        <table class="tabla-datos">
-          <thead>
-            <tr><th>N.º</th><th>Fecha</th><th>Paciente</th><th>Método</th><th class="num">Total</th><th>Estado</th><th>Acciones</th></tr>
-          </thead>
-          <tbody>
+          <table class="tabla-datos">
+            <thead>
+            <tr><th>N.º</th><th>Fecha</th><th>Paciente</th><th>Método</th><!-- pagos.metodo_pago (último pago) --><th class="num">Total</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
             <tr data-id="3">
               <td>F-0003</td><td>18/07/2026</td><td>Laura Díaz</td><td>Tarjeta</td><td class="num">$120.000</td>
               <td><span class="badge badge-activo">Pagada</span></td>
@@ -150,12 +157,20 @@
               <td><span class="badge badge-inactivo">Anulada</span></td>
               <td class="acciones-tabla"><button class="editar" type="button">Ver</button><button class="eliminar" type="button">Anular</button></td>
             </tr>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
         </div>
       </section>
     </div>
 
+    <!-- =====================================================
+     PIE DE PÁGINA
+     Datos del aprendiz para identificar la evidencia
+     ===================================================== -->
+    <footer class="pie">
+      <p>BellaSoft · Sistema de gestión para clínica estética</p>
+      <p>Aprendiz: Linda Camila Ruiz Ayala · Ficha: 3186695</p>
+    </footer>
   </main>
 </div>
 

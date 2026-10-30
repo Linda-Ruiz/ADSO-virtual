@@ -7,9 +7,9 @@
   <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
- 
+
 <div class="app">
- 
+
   <!-- =====================================================
      1. MENÚ LATERAL
      BD: permisos.modulo (cada enlace = un módulo) + rol_permiso (qué ve cada rol)
@@ -26,9 +26,9 @@
       <a href="configuracion.html"><span class="icon">⚙️</span> Configuración</a>
     </nav>
   </aside>
- 
+
   <main class="main">
- 
+
     <!-- =====================================================
      2. BARRA SUPERIOR
      BD: usuarios.nombres, usuarios.apellidos, roles.nombre (usuario en sesión)
@@ -41,11 +41,12 @@
       <div class="right">
         <div class="notifications">🔔 Notificaciones</div>
         <div class="avatar">LR</div> <!-- iniciales: usuarios.nombres + usuarios.apellidos -->
+        <a class="cerrar-sesion" href="inicio-sesion.html">Cerrar sesión</a>
       </div>
     </header>
- 
+
     <div class="content">
- 
+
       <!-- =====================================================
      3. TARJETAS DE RESUMEN
      BD: COUNT(*) pacientes / citas / tratamientos, SUM(total) facturas
@@ -65,10 +66,10 @@
         </div>
         <div class="stat-card">
           <span class="emoji">💰</span>
-          <div><div class="label">Ingresos</div><div class="value">$5.200.000</div></div> <!-- SUM(total) FROM facturas -->
+          <div><div class="label">Ingresos</div><div class="value">$5.200.000</div></div> <!-- SUM(monto) FROM pagos (ver vista_ingresos_mensuales) -->
         </div>
       </section>
- 
+
       <!-- =====================================================
      4. ACCIONES RÁPIDAS
      BD: navegación (sin consulta a BD)
@@ -77,61 +78,69 @@
         <a class="btn btn-green" href="citas.html">🟢 Ver todas</a>
         <a class="btn btn-pink" href="citas.html">💗 Gestionar citas</a>
       </section>
- 
+
       <!-- =====================================================
      5. PANELES DE CITAS
      BD: citas JOIN pacientes (últimas citas / próximas por fecha y hora)
      ===================================================== -->
       <section class="panels">
- 
+
         <!-- 5.1 Últimas citas | pacientes.nombres, apellidos, numero_documento, telefono, estado -->
         <div class="panel">
           <div class="panel-title">Últimas citas</div>
           <table>
             <thead>
-              <tr><th>Paciente</th><th>Documento</th><th>Teléfono</th><th>Estado</th><th>Acciones</th></tr>
+            <tr><th>Paciente</th><th>Documento</th><th>Teléfono</th><th>Estado</th><th>Acciones</th></tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Ana Ruiz</td><td>1002456</td><td>3001234567</td>
-                <td><span class="badge badge-activo">Activo</span></td>
-                <td><span class="action-icons">✏️ 🗑️</span></td>
-              </tr>
-              <tr>
-                <td>Laura Díaz</td><td>1009876</td><td>3107654321</td>
-                <td><span class="badge badge-activo">Activo</span></td>
-                <td><span class="action-icons">✏️ 🗑️</span></td>
-              </tr>
-              <tr>
-                <td>María López</td><td>1012456</td><td>3156543210</td>
-                <td><span class="badge badge-inactivo">Inactivo</span></td>
-                <td><span class="action-icons">✏️ 🗑️</span></td>
-              </tr>
+            <tr>
+              <td>Ana Ruiz</td><td>1002456</td><td>3001234567</td>
+              <td><span class="badge badge-activo">Activo</span></td>
+              <td><span class="action-icons">✏️ 🗑️</span></td>
+            </tr>
+            <tr>
+              <td>Laura Díaz</td><td>1009876</td><td>3107654321</td>
+              <td><span class="badge badge-activo">Activo</span></td>
+              <td><span class="action-icons">✏️ 🗑️</span></td>
+            </tr>
+            <tr>
+              <td>María López</td><td>1012456</td><td>3156543210</td>
+              <td><span class="badge badge-inactivo">Inactivo</span></td>
+              <td><span class="action-icons">✏️ 🗑️</span></td>
+            </tr>
             </tbody>
           </table>
         </div>
- 
+
         <!-- 5.2 Próximas citas | citas.hora + pacientes (nombre) -->
         <div class="panel">
           <div class="panel-title">Próximas citas</div>
           <table class="proximas">
             <thead><tr><th>Hora</th><th>Paciente</th></tr></thead>
             <tbody>
-              <tr><td>09:00</td><td>Laura Díaz</td></tr>
-              <tr><td>10:30</td><td>Miguel Molina</td></tr>
-              <tr><td>11:45</td><td>Lola Lolita</td></tr>
+            <tr><td>09:00</td><td>Laura Díaz</td></tr>
+            <tr><td>10:30</td><td>Miguel Molina</td></tr>
+            <tr><td>11:45</td><td>Lola Lolita</td></tr>
             </tbody>
           </table>
         </div>
- 
+
       </section>
     </div>
- 
+
+    <!-- =====================================================
+     PIE DE PÁGINA
+     Datos del aprendiz para identificar la evidencia
+     ===================================================== -->
+    <footer class="pie">
+      <p>BellaSoft · Sistema de gestión para clínica estética</p>
+      <p>Aprendiz: TU NOMBRE · Ficha: TU NÚMERO</p>
+    </footer>
   </main>
 </div>
- 
+
 <!-- Lógica de la página (pendiente de implementar) -->
 <script src="script.js"></script>
- 
+
 </body>
 </html>

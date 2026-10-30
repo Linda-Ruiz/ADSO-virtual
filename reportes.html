@@ -41,6 +41,7 @@
       <div class="right">
         <div class="notifications">🔔 Notificaciones</div>
         <div class="avatar">LR</div> <!-- iniciales: usuarios.nombres + usuarios.apellidos -->
+        <a class="cerrar-sesion" href="inicio-sesion.html">Cerrar sesión</a>
       </div>
     </header>
 
@@ -65,9 +66,9 @@
      BD: consultas agregadas ({PROV})
      ===================================================== -->
       <section class="stats">
-        <div class="stat-card"><span class="emoji">💰</span><div><div class="label">Ingresos</div><div class="value">$5.200.000</div></div></div> <!-- SUM(total) FROM facturas WHERE estado='Pagada' -->
+        <div class="stat-card"><span class="emoji">💰</span><div><div class="label">Ingresos</div><div class="value">$5.200.000</div></div></div> <!-- SUM(monto) FROM pagos WHERE fecha_pago BETWEEN ? AND ? -->
         <div class="stat-card"><span class="emoji">🧾</span><div><div class="label">Facturas emitidas</div><div class="value">42</div></div></div> <!-- COUNT(*) FROM facturas -->
-        <div class="stat-card"><span class="emoji">✅</span><div><div class="label">Citas completadas</div><div class="value">18</div></div></div> <!-- COUNT(*) FROM citas WHERE estado='Completado' -->
+        <div class="stat-card"><span class="emoji">✅</span><div><div class="label">Citas atendidas</div><div class="value">18</div></div></div> <!-- COUNT(*) FROM citas WHERE estado='Atendida' AND fecha BETWEEN ? AND ? -->
         <div class="stat-card"><span class="emoji">👥</span><div><div class="label">Pacientes nuevos</div><div class="value">12</div></div></div> <!-- COUNT(*) FROM pacientes WHERE fecha_registro BETWEEN ? AND ? -->
       </section>
 
@@ -79,51 +80,59 @@
         <div class="panel">
           <div class="panel-title">Ingresos por tratamiento</div>
           <div class="barras">
-          <div class="barra-fila">
-            <span class="barra-etiqueta">Botox</span>
-            <span class="barra-pista"><span class="barra-relleno" style="width:100%"></span></span>
-            <span class="barra-valor">$2.600.000</span>
-          </div>
-          <div class="barra-fila">
-            <span class="barra-etiqueta">Depilación láser</span>
-            <span class="barra-pista"><span class="barra-relleno" style="width:55%"></span></span>
-            <span class="barra-valor">$1.440.000</span>
-          </div>
-          <div class="barra-fila">
-            <span class="barra-etiqueta">Facial</span>
-            <span class="barra-pista"><span class="barra-relleno" style="width:37%"></span></span>
-            <span class="barra-valor">$960.000</span>
-          </div>
-          <div class="barra-fila">
-            <span class="barra-etiqueta">Peeling químico</span>
-            <span class="barra-pista"><span class="barra-relleno" style="width:8%"></span></span>
-            <span class="barra-valor">$200.000</span>
-          </div>
+            <div class="barra-fila">
+              <span class="barra-etiqueta">Botox</span>
+              <span class="barra-pista"><span class="barra-relleno ancho-100"></span></span>
+              <span class="barra-valor">$2.600.000</span>
+            </div>
+            <div class="barra-fila">
+              <span class="barra-etiqueta">Depilación láser</span>
+              <span class="barra-pista"><span class="barra-relleno ancho-55"></span></span>
+              <span class="barra-valor">$1.440.000</span>
+            </div>
+            <div class="barra-fila">
+              <span class="barra-etiqueta">Facial</span>
+              <span class="barra-pista"><span class="barra-relleno ancho-37"></span></span>
+              <span class="barra-valor">$960.000</span>
+            </div>
+            <div class="barra-fila">
+              <span class="barra-etiqueta">Peeling químico</span>
+              <span class="barra-pista"><span class="barra-relleno ancho-8"></span></span>
+              <span class="barra-valor">$200.000</span>
+            </div>
           </div>
         </div>
         <div class="panel">
           <div class="panel-title">Citas por estado</div>
           <div class="barras">
-          <div class="barra-fila">
-            <span class="barra-etiqueta">Completadas</span>
-            <span class="barra-pista"><span class="barra-relleno" style="width:100%"></span></span>
-            <span class="barra-valor">18</span>
-          </div>
-          <div class="barra-fila">
-            <span class="barra-etiqueta">Activas</span>
-            <span class="barra-pista"><span class="barra-relleno" style="width:50%"></span></span>
-            <span class="barra-valor">9</span>
-          </div>
-          <div class="barra-fila">
-            <span class="barra-etiqueta">Canceladas</span>
-            <span class="barra-pista"><span class="barra-relleno" style="width:22%"></span></span>
-            <span class="barra-valor">4</span>
-          </div>
+            <div class="barra-fila">
+              <span class="barra-etiqueta">Atendidas</span>
+              <span class="barra-pista"><span class="barra-relleno ancho-100"></span></span>
+              <span class="barra-valor">18</span>
+            </div>
+            <div class="barra-fila">
+              <span class="barra-etiqueta">Programadas</span>
+              <span class="barra-pista"><span class="barra-relleno ancho-50"></span></span>
+              <span class="barra-valor">9</span>
+            </div>
+            <div class="barra-fila">
+              <span class="barra-etiqueta">Canceladas</span>
+              <span class="barra-pista"><span class="barra-relleno ancho-22"></span></span>
+              <span class="barra-valor">4</span>
+            </div>
           </div>
         </div>
       </section>
     </div>
 
+    <!-- =====================================================
+     PIE DE PÁGINA
+     Datos del aprendiz para identificar la evidencia
+     ===================================================== -->
+    <footer class="pie">
+      <p>BellaSoft · Sistema de gestión para clínica estética</p>
+      <p>Aprendiz: Linda Camila Ruiz Ayala · Ficha: 3186695</p>
+    </footer>
   </main>
 </div>
 
