@@ -22,7 +22,7 @@ const tratamientos = [
 ];
 
 const pacientes = [
-    { id: 1, nombres: "Ana",    apellidos: "Ruiz",    documento: "1002456", estado: "Activo" },
+    { id: 1, nombres: "Catalina",    apellidos: "Ruiz",    documento: "1002456", estado: "Activo" },
     { id: 2, nombres: "Laura",  apellidos: "Díaz",    documento: "1009876", estado: "Activo" },
     { id: 3, nombres: "María",  apellidos: "López",   documento: "1012456", estado: "Inactivo" }
 ];
