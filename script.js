@@ -18,7 +18,8 @@ const tratamientos = [
     { id: 1, nombre: "Facial",           idCategoria: 1, duracion: 60, precio: 120000, activo: true },
     { id: 2, nombre: "Botox",            idCategoria: 4, duracion: 45, precio: 650000, activo: true },
     { id: 3, nombre: "Depilación láser", idCategoria: 3, duracion: 45, precio: 180000, activo: true },
-    { id: 4, nombre: "Peeling químico",  idCategoria: 1, duracion: 50, precio: 240000, activo: false }
+    { id: 4, nombre: "Peeling químico",  idCategoria: 1, duracion: 50, precio: 240000, activo: false },
+    { id: 5, nombre: "Limpieza con ultrasonido", idCategoria: 1, duracion: 40, precio: 150000, activo: true }
 ];
 
 const pacientes = [
