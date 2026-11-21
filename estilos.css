@@ -1231,3 +1231,66 @@ a:focus-visible {
 .ancho-37  { width: 37%; }
 .ancho-22  { width: 22%; }
 .ancho-8   { width: 8%; }
+
+/* =====================================================
+   13. AVISOS DE VALIDACIÓN Y FILTROS (los crea script.js)
+   ===================================================== */
+.aviso {
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.aviso-error {
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+    color: #9f1239;
+}
+
+.aviso-exito {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+}
+
+/* Campos de rejillas sin .campo (citas) también muestran el error */
+.form-grid .invalido {
+    border-color: #f43f5e !important;
+    background: #fff1f2;
+}
+
+.detalle-factura .invalido {
+    border-color: #f43f5e;
+    background: #fff1f2;
+}
+
+/* Barra de filtros sobre las tablas (citas, tratamientos) */
+.filtros {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #475569;
+}
+
+.filtros select,
+.filtros input {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    color: #475569;
+}
+
+.calendar .day {
+    cursor: pointer;
+}
+
+tr[hidden] {
+    display: none;
+}

@@ -132,6 +132,17 @@
      BD: citas JOIN pacientes JOIN tratamientos WHERE fecha = día seleccionado
      ===================================================== -->
           <p class="section-title">Citas Programadas</p>
+          <div class="filtros">
+            <label for="filtro-estado">Filtrar por estado</label>
+            <select id="filtro-estado">
+              <option value="">Todos</option>
+              <option value="Programada">Programada</option>
+              <option value="Confirmada">Confirmada</option>
+              <option value="Atendida">Atendida</option>
+              <option value="Cancelada">Cancelada</option>
+              <option value="No asistió">No asistió</option>
+            </select>
+          </div>
           <div class="table-wrap">
             <table class="citas">
               <thead>
@@ -187,7 +198,7 @@
   </main>
 </div>
 
-<!-- Lógica de la página (pendiente de implementar) -->
+<!-- Lógica de la página: validaciones, filtros y eventos (script.js) -->
 <script src="script.js"></script>
 
 </body>

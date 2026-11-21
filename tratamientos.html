@@ -123,7 +123,17 @@
      BD: SELECT FROM tratamientos ORDER BY nombre
      ===================================================== -->
       <section class="table-card">
-        <h3>Tratamientos registrados</h3>
+        <h3>Tratamientos registrados <small id="conteo-tratamientos"></small></h3>
+        <div class="filtros">
+          <input id="buscar-tratamiento" type="search" placeholder="Buscar por nombre" aria-label="Buscar tratamiento">
+          <select id="filtro-categoria" aria-label="Filtrar por categoría">
+            <option value="">Todas las categorías</option>
+            <option value="Facial">Facial</option>
+            <option value="Corporal">Corporal</option>
+            <option value="Láser">Láser</option>
+            <option value="Inyectables">Inyectables</option>
+          </select>
+        </div>
         <div class="tabla-scroll">
           <table class="tabla-datos">
             <thead>
@@ -167,7 +177,7 @@
   </main>
 </div>
 
-<!-- Lógica de la página (pendiente de implementar) -->
+<!-- Lógica de la página: validaciones, filtros y eventos (script.js) -->
 <script src="script.js"></script>
 
 </body>
